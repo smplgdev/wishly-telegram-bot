@@ -18,4 +18,7 @@ async def gift_item_handler(call: types.CallbackQuery, callback_data: ItemCallba
     item = await ItemCommand.gift(call.from_user.id, item_id)
     markup = GetInlineKeyboardMarkup.item_markup(item)
     await call.message.edit_reply_markup(markup)
-    await call.answer(strings.item_gifted, show_alert=True)
+    if item:
+        await call.answer(strings.item_gifted, show_alert=True)
+    if not item:
+        await call.answer(strings.seems_that_someone_gift_it, show_alert=True)

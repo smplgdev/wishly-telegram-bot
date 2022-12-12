@@ -101,8 +101,10 @@ class ItemCommand:
         return await Item.get(item_id)
 
     @staticmethod
-    async def gift(giver_tg_id: int, item_id: int) -> Item:
+    async def gift(giver_tg_id: int, item_id: int) -> Item | bool:
         item = await Item.get(item_id)
+        if giver_tg_id:
+            return False
         await item.update(buyer_tg_id=giver_tg_id).apply()
         return item
 
