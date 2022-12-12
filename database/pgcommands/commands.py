@@ -28,8 +28,9 @@ class UserCommand:
         return await User.query.where(User.tg_id == user_tg_id).gino.first()
 
     @staticmethod
-    async def count_user_gifts(user_tg_id: int):
-        items = await Item.query.where(Item.buyer_tg_id == user_tg_id).gino.all()
+    async def count_user_gifts(user_tg_id: int, wishlist_id: int):
+        items = await Item.query.where(and_(Item.buyer_tg_id == user_tg_id,
+                                            Item.wishlist_id == wishlist_id)).gino.all()
         return len(items)
 
     @staticmethod
@@ -101,12 +102,12 @@ class ItemCommand:
         return await Item.get(item_id)
 
     @staticmethod
-    async def gift(giver_tg_id: int, item_id: int) -> Item | bool:
+    async def gift(giver_tg_id: int, item_id: int) -> bool:
         item = await Item.get(item_id)
-        if giver_tg_id:
+        if item.buyer_tg_id is not None:
             return False
         await item.update(buyer_tg_id=giver_tg_id).apply()
-        return item
+        return True
 
     @staticmethod
     async def delete(item_id: int):
