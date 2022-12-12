@@ -70,7 +70,8 @@ class WishlistCommand:
     @staticmethod
     async def make_inactive(wishlist_id: int):
         wishlist = await Wishlist.get(wishlist_id)
-        return await wishlist.update(is_active=False).apply()
+        await wishlist.update(is_active=False).apply()
+        return wishlist
 
     @staticmethod
     async def find_by_hashcode(hashcode: str):
@@ -101,8 +102,8 @@ class ItemCommand:
 
     @staticmethod
     async def gift(giver_tg_id: int, item_id: int) -> Item:
-        item = await Item.get(item_id).update(buyer_tg_id=giver_tg_id)
-        await item.apply()
+        item = await Item.get(item_id)
+        await item.update(buyer_tg_id=giver_tg_id).apply()
         return item
 
     @staticmethod
