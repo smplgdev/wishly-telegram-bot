@@ -20,7 +20,11 @@ class UserCommand:
         try:
             await user.create()
         except UniqueViolationError:
-            return await UserCommand.get(tg_id)
+            user = await UserCommand.get(tg_id)
+            await user.update(
+                username=username,
+            ).apply()
+            return user
         return user
 
     @staticmethod
@@ -68,13 +72,13 @@ class WishlistCommand:
         array = await Wishlist.query.where(and_(Wishlist.creator_tg_id == user_tg_id,
                                                 Wishlist.is_active.is_(True))).gino.all()
 
-        # bought_gifts = await Item.query.where(
-        #     Item.buyer_tg_id == user_tg_id
-        # ).gino.all()
-        # wishlists_id = set(item.wishlist_id for item in bought_gifts)
-        #
-        # for wishlist_id in wishlists_id:
-        #     array.append(await Wishlist.join(User).select().where(Wishlist.id == wishlist_id).gino.first())
+        bought_gifts = await Item.query.where(
+            Item.buyer_tg_id == user_tg_id
+        ).gino.all()
+        wishlists_id = set(item.wishlist_id for item in bought_gifts)
+
+        for wishlist_id in wishlists_id:
+            array.append(await Wishlist.query.where(Wishlist.id == wishlist_id).gino.first())
 
         return array
 

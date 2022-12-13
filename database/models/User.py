@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from sqlalchemy import func
+
 from database.db_gino import db
 
 
@@ -23,4 +25,5 @@ class User(db.Model):
     username = db.Column(db.String(32))
     is_active = db.Column(db.Boolean(), default=True)
 
-    created_at = db.Column(db.DateTime(), default=datetime.utcnow())
+    created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    updated_at = db.Column(db.DateTime(timezone=True), onupdate=func.now())

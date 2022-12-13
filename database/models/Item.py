@@ -1,4 +1,4 @@
-from datetime import datetime
+from sqlalchemy import func
 
 from database.db_gino import db
 
@@ -15,5 +15,6 @@ class Item(db.Model):
     price = db.Column(db.String(50))
     photo_file_id = db.Column(db.String(200))
 
-    created_at = db.Column(db.DateTime(), default=datetime.utcnow())
+    created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
+
     thumb_link = db.Column(db.String(100))
