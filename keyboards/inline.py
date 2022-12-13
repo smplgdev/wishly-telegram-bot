@@ -58,11 +58,11 @@ class GetInlineKeyboardMarkup:
     async def list_user_wishlists(wishlists: list[Wishlist]):
         builder = InlineKeyboardBuilder()
         for wishlist in wishlists:
-            if not wishlist.wishlist_is_active:
+            if not wishlist.is_active:
                 continue
             builder.button(
-                text=f"{wishlist.name} — {wishlist.title[:32]} ({wishlist.expiration_date.strftime('%d.%m.%Y')})",
-                callback_data=WishlistCallback(wishlist_id=wishlist.creator_tg_id,
+                text=f"{wishlist.title[:32]} ({wishlist.expiration_date.strftime('%d.%m.%Y')})",
+                callback_data=WishlistCallback(wishlist_id=wishlist.id,
                                                action="show")
             )
         builder.adjust(1)

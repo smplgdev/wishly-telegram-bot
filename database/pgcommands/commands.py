@@ -65,8 +65,8 @@ class WishlistCommand:
 
     @staticmethod
     async def get_all_user_wishlists(user_tg_id: int) -> list[Wishlist, User]:
-        array = await Wishlist.join(User).select().where(and_(Wishlist.creator_tg_id == user_tg_id,
-                                                              Wishlist.is_active.is_(True))).gino.all()
+        array = await Wishlist.query.where(and_(Wishlist.creator_tg_id == user_tg_id,
+                                                Wishlist.is_active.is_(True))).gino.all()
 
         # bought_gifts = await Item.query.where(
         #     Item.buyer_tg_id == user_tg_id
