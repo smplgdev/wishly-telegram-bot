@@ -22,7 +22,6 @@ async def show_wishlist_handler(call: types.CallbackQuery, callback_data: Wishli
 async def show_wishlist(message: types.Message, user_id: int, wishlist: Wishlist):
     owner = await UserCommand.get(wishlist.creator_tg_id)
     wishlist_items = await ItemCommand.get_all_wishlist_items(wishlist.id)
-
     if owner.tg_id == user_id:
         is_owner = True
     else:
@@ -30,6 +29,7 @@ async def show_wishlist(message: types.Message, user_id: int, wishlist: Wishlist
     markup = GetInlineKeyboardMarkup.list_wishlist_items(
         items=wishlist_items,
         wishlist_id=wishlist.id,
+        wishlist_hashcode=wishlist.hashcode,
         is_owner=is_owner
     )
 
@@ -44,7 +44,7 @@ async def show_user_wishlists(message: types.Message):
     List all user's wishlists
     """
     user_wishlists = await WishlistCommand.get_all_user_wishlists(message.from_user.id)
-    markup = GetInlineKeyboardMarkup.list_user_wishlists(user_wishlists)
+    markup = await GetInlineKeyboardMarkup.list_user_wishlists(user_wishlists)
     await message.answer(strings.your_wishlists, reply_markup=markup)
 
 
@@ -58,7 +58,13 @@ async def show_item(call: types.CallbackQuery, callback_data: ItemCallback):
         is_owner = True
     else:
         is_owner = False
-    markup = GetInlineKeyboardMarkup.item_markup(item, is_owner)
+
+    markup = GetInlineKeyboardMarkup.item_markup(
+        item=item,
+        wishlist_hashcode=wishlist.wishlist_hashcode,
+        is_owner=is_owner
+    )
+
     if item.photo_file_id is None:
         await call.message.edit_text(text, reply_markup=markup)
     else:

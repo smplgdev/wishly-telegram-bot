@@ -64,9 +64,19 @@ class WishlistCommand:
         return await Wishlist.query.where(Wishlist.hashcode == hashcode).gino.first()
 
     @staticmethod
-    async def get_all_user_wishlists(user_tg_id: int) -> list[Wishlist]:
-        return await Wishlist.query.where(and_(Wishlist.creator_tg_id == user_tg_id,
-                                               Wishlist.is_active.is_(True))).gino.all()
+    async def get_all_user_wishlists(user_tg_id: int) -> list[Wishlist, User]:
+        array = await Wishlist.join(User).select().where(and_(Wishlist.creator_tg_id == user_tg_id,
+                                                              Wishlist.wishlist_is_active.is_(True))).gino.all()
+
+        # bought_gifts = await Item.query.where(
+        #     Item.buyer_tg_id == user_tg_id
+        # ).gino.all()
+        # wishlists_id = set(item.wishlist_id for item in bought_gifts)
+        #
+        # for wishlist_id in wishlists_id:
+        #     array.append(await Wishlist.join(User).select().where(Wishlist.id == wishlist_id).gino.first())
+
+        return array
 
     @staticmethod
     async def make_inactive(wishlist_id: int):
@@ -75,7 +85,7 @@ class WishlistCommand:
         return wishlist
 
     @staticmethod
-    async def find_by_hashcode(hashcode: str):
+    async def find_by_hashcode(hashcode: str) -> Wishlist | bool:
         wishlist = await Wishlist.query.where(Wishlist.hashcode == hashcode).gino.first()
         if wishlist is None:
             return False
@@ -84,10 +94,19 @@ class WishlistCommand:
 
 class ItemCommand:
     @staticmethod
-    async def add(wishlist_id: int, title: str, description: str | None, photo_file_id: str | None, **kwargs):
+    async def add(
+            wishlist_id: int,
+            title: str,
+            photo_link: str,
+            thumb_link: str,
+            description: str | None,
+            photo_file_id: str | None,
+            **kwargs):
         return await Item(
             wishlist_id=wishlist_id,
             title=title,
+            photo_link=photo_link,
+            thumb_link=thumb_link,
             description=description,
             photo_file_id=photo_file_id,
             **kwargs
@@ -114,3 +133,8 @@ class ItemCommand:
         item = await Item.get(item_id)
         await item.delete()
         return item
+
+    @staticmethod
+    async def item_counter(wishlist_id: int):
+        item_counter = len(await Item.query.where(Item.wishlist_id == wishlist_id).gino.all())
+        return item_counter

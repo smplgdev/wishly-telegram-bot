@@ -1,6 +1,6 @@
-import asyncio
+import io
 
-from aiogram import Router
+from aiogram import Router, F, types
 from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message

@@ -1,13 +1,17 @@
+import io
+
 from aiogram import Router, F, types
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardRemove
 
 from bot import bot
 from database.pgcommands.commands import ItemCommand
+
 from keyboards.callback_factories import WishlistCallback
 from keyboards.default import GetKeyboardMarkup
 from keyboards.inline import GetInlineKeyboardMarkup
 from src import strings
+from src.utils.photo_link_telegraph import upload_photo
 from states.item import AddItem
 
 router = Router()
@@ -15,8 +19,13 @@ router = Router()
 
 @router.callback_query(WishlistCallback.filter(F.action.in_(["add", "add_another_item"])))
 async def add_new_item_to_wishlist(call: types.CallbackQuery, state: FSMContext, callback_data: WishlistCallback):
+    wishlist_id = callback_data.wishlist_id
+    item_counter = await ItemCommand.item_counter(wishlist_id)
+    if item_counter >= 50:
+        await call.message.answer(strings.gift_limit_reached)
+        return
     await call.message.answer(strings.enter_item_title)
-    await state.update_data(wishlist_id=callback_data.wishlist_id)
+    await state.update_data(wishlist_id=wishlist_id)
     await state.set_state(AddItem.title)
     await call.answer(cache_time=10)
 
@@ -51,7 +60,18 @@ async def add_new_item_to_wishlist_step4(message: types.Message, state: FSMConte
     photo_file_id = None
     if message.text != strings.skip_stage and message.photo:
         photo_file_id = message.photo[-1].file_id
+
+        photo_bytes = io.BytesIO()
+        await bot.download(message.photo[-1], photo_bytes)
+        photo_link = await upload_photo(photo_bytes)
+
+        thumb_bytes = io.BytesIO()
+        await bot.download(message.photo[0], thumb_bytes)
+        thumb_link = await upload_photo(thumb_bytes)
+
         await state.update_data(item_photo_file_id=photo_file_id)
+        await state.update_data(thumb_link=thumb_link)
+        await state.update_data(item_photo_link=photo_link)
     data = await state.get_data()
     title = data.get("item_title")
     description = data.get("item_description")
@@ -77,9 +97,13 @@ async def apply_adding_item_handler(call: types.CallbackQuery, state: FSMContext
     wishlist_id = data.get("wishlist_id")
     title = data.get("item_title")
     description = data.get("item_description")
+    photo_link = data.get("item_photo_link")
+    thumb_link = data.get("thumb_link")
     photo_file_id = data.get("item_photo_file_id")
     await ItemCommand.add(wishlist_id=wishlist_id,
                           title=title,
+                          photo_link=photo_link,
+                          thumb_link=thumb_link,
                           description=description,
                           photo_file_id=photo_file_id)
     markup = GetInlineKeyboardMarkup.main_menu_or_another_item(wishlist_id=wishlist_id)
@@ -93,3 +117,17 @@ async def discard_adding_item_handler(call: types.CallbackQuery, state: FSMConte
     await state.clear()
     markup = GetInlineKeyboardMarkup.main_menu_or_another_item(wishlist_id=wishlist_id)
     await call.message.edit_text(strings.creating_item_discard, reply_markup=markup)
+
+
+@router.message(F.content_type == 'photo')
+async def send_photo_link(message: types.Message):
+    large_photo_bytes = io.BytesIO()
+    await bot.download(message.photo[-1], large_photo_bytes)
+    photo_link = await upload_photo(large_photo_bytes)
+
+    thumb_bytes = io.BytesIO()
+    await bot.download(message.photo[0], thumb_bytes)
+    thumb_link = await upload_photo(thumb_bytes)
+
+    await message.answer(photo_link)
+    await message.answer(thumb_link)

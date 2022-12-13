@@ -22,7 +22,11 @@ async def gift_item_handler(call: types.CallbackQuery, callback_data: ItemCallba
         is_owner = False
     is_gifted = await ItemCommand.gift(call.from_user.id, item_id)
     item = await ItemCommand.get(item_id)
-    markup = GetInlineKeyboardMarkup.item_markup(item=item, is_owner=is_owner)
+    markup = GetInlineKeyboardMarkup.item_markup(
+        item=item,
+        wishlist_hashcode=wishlist.hashcode,
+        is_owner=is_owner
+    )
     await call.message.edit_reply_markup(markup)
     if is_gifted:
         await call.answer(strings.item_gifted, show_alert=True)

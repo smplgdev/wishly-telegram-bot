@@ -1,4 +1,4 @@
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from database.models.Item import Item
@@ -55,34 +55,43 @@ class GetInlineKeyboardMarkup:
         return builder.as_markup()
 
     @staticmethod
-    def list_user_wishlists(wishlists: list[Wishlist]):
+    async def list_user_wishlists(wishlists: list[Wishlist]):
         builder = InlineKeyboardBuilder()
         for wishlist in wishlists:
-            if not wishlist.is_active:
+            if not wishlist.wishlist_is_active:
                 continue
-            builder.button(text=f"{wishlist.title[:32]} ({wishlist.expiration_date}) #{wishlist.hashcode}",
-                           callback_data=WishlistCallback(wishlist_id=wishlist.id,
-                                                          action="show"))
+            builder.button(
+                text=f"{wishlist.name} — {wishlist.title[:32]} ({wishlist.expiration_date.strftime('%d.%m.%Y')})",
+                callback_data=WishlistCallback(wishlist_id=wishlist.creator_tg_id,
+                                               action="show")
+            )
         builder.adjust(1)
         return builder.as_markup()
 
     @staticmethod
-    def list_wishlist_items(items: list[Item], wishlist_id: int, is_owner: bool = False):
+    def list_wishlist_items(
+            items: list[Item],
+            wishlist_id: int,
+            wishlist_hashcode: str,
+            is_owner: bool = False
+    ) -> InlineKeyboardMarkup:
         builder = InlineKeyboardBuilder()
 
         if len(items) == 0:
             builder.button(text=strings.user_hasnt_added_any_items,
                            callback_data="null")
         else:
-            for item in items:
-                if item.buyer_tg_id:
-                    item_title = "✅ " + item.title
-                else:
-                    item_title = item.title
-                builder.button(text=item_title,
-                               callback_data=ItemCallback(wishlist_id=item.wishlist_id,
-                                                          item_id=item.id,
-                                                          action="show"))
+            builder.button(text=strings.show_items_list,
+                           switch_inline_query_current_chat=wishlist_hashcode)
+            # for item in items:
+            #     if item.buyer_tg_id:
+            #         item_title = "✅ " + item.title
+            #     else:
+            #         item_title = item.title
+            #     builder.button(text=item_title,
+            #                    callback_data=ItemCallback(wishlist_id=item.wishlist_id,
+            #                                               item_id=item.id,
+            #                                               action="show"))
 
         if is_owner:
             builder.button(text=strings.add_item_to_wishlist,
@@ -98,21 +107,23 @@ class GetInlineKeyboardMarkup:
         return builder.as_markup()
 
     @staticmethod
-    def item_markup(item: Item, is_owner: bool = False):
+    def item_markup(item: Item, wishlist_hashcode: str, is_owner: bool = False):
         builder = InlineKeyboardBuilder()
         if item.buyer_tg_id is None:
             builder.button(text=strings.i_will_gift_this_item,
                            callback_data=ItemCallback(wishlist_id=item.wishlist_id,
                                                       item_id=item.id,
                                                       action="gift"))
+        else:
+            builder.button(text=strings.someone_else_gift_it,
+                           callback_data="null")
         if is_owner:
             builder.button(text=strings.delete_item,
                            callback_data=ItemCallback(wishlist_id=item.wishlist_id,
                                                       item_id=item.id,
                                                       action="delete"))
-        builder.button(text=strings.go_back,
-                       callback_data=WishlistCallback(wishlist_id=item.wishlist_id,
-                                                      action="show"))
+        builder.button(text=strings.show_items_list,
+                       switch_inline_query_current_chat=wishlist_hashcode)
         builder.adjust(1)
         return builder.as_markup()
 
