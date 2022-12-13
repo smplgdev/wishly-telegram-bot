@@ -2,7 +2,6 @@ import logging
 import asyncio
 from aiogram import Bot, Dispatcher
 from aiogram.types import BotCommand
-from aiograph import Telegraph
 
 from database.db_gino import db
 from handlers import start, gift_ideas, create_wishlist, add_item, main_menu, show_wishlist, gift_item, settings, \
@@ -12,7 +11,6 @@ from handlers.inline import show_wishlist_inline
 
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=config.BOT_TOKEN.get_secret_value(), parse_mode='HTML')
-telegraph = Telegraph()
 ADMINS = config.ADMINS
 
 POSTGRES_URI = f'postgresql://{config.PG_USERNAME}:{config.PG_PASSWORD}@{config.ip}/{config.PG_DATABASE}'
