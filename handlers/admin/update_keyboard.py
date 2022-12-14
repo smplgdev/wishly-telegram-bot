@@ -5,6 +5,7 @@ from aiogram import types, F, Router, Bot
 from database.pgcommands.commands import UserCommand, ItemCommand
 from filters.admin_filter import AdminFilter
 from keyboards.default import GetKeyboardMarkup
+from src import strings
 from src.utils.photo_link_telegraph import upload_photo
 
 admin_router = Router()
@@ -16,7 +17,8 @@ async def send_bot_update_message(message: types.Message, bot: Bot):
     for user in users:
         await bot.send_message(
             user.tg_id,
-            "Бот обновился!",
+            "Бот обновился! Теперь просмотр списка подарков стал еще удобнее, "
+            f"а вишлисты друзей доступны по нажатию одной кнопки <b>{strings.find_friends_wishlist}</b>",
             reply_markup=GetKeyboardMarkup.start(user_name="admin")
         )
 
