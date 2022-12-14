@@ -1,3 +1,4 @@
+import asyncio
 import io
 
 from aiogram import types, F, Router, Bot
@@ -14,13 +15,22 @@ admin_router = Router()
 @admin_router.message(AdminFilter(), F.text == 'update_kb')
 async def send_bot_update_message(message: types.Message, bot: Bot):
     users = await UserCommand.get_all_users()
+    cnt = 0
     for user in users:
-        await bot.send_message(
-            user.tg_id,
-            "Бот обновился! Теперь просмотр списка подарков стал еще удобнее, "
-            f"а вишлисты друзей доступны по нажатию одной кнопки <b>{strings.find_friends_wishlist}</b>",
-            reply_markup=GetKeyboardMarkup.start(user_name="admin")
-        )
+        try:
+            await bot.send_message(
+                user.tg_id,
+                "Бот обновился! Теперь просмотр списка подарков стал еще удобнее, "
+                f"а вишлисты друзей доступны по нажатию одной кнопки <b>{strings.find_friends_wishlist}</b>",
+                reply_markup=GetKeyboardMarkup.start(user_name="admin")
+            )
+        except Exception as e:
+            print(e)
+            cnt += 1
+            await UserCommand.make_inactive(user_tg_id=user.tg_id)
+            continue
+        await asyncio.sleep(0.04)
+    print("%s users banned bot" % cnt)
 
 
 @admin_router.message(AdminFilter(), F.text == 'update_pics')
