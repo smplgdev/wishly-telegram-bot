@@ -51,7 +51,7 @@ async def main():
     ])
 
     # Launch bot & skip all missed messages
-    # await bot.delete_webhook(drop_pending_updates=True)
+    await bot.delete_webhook(drop_pending_updates=True)
 
     logging.info("Starting bot...")
     await dp.start_polling(bot)

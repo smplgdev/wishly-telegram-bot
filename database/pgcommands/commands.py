@@ -115,7 +115,10 @@ class WishlistCommand:
             user_tg_id: int,
     ) -> list[Wishlist]:
         related_wishlists = await RelatedWishlist.join(Wishlist).select()\
-            .where(RelatedWishlist.user_tg_id == user_tg_id).gino.all()
+            .where(and_(
+                    RelatedWishlist.user_tg_id == user_tg_id,
+                    Wishlist.is_active.is_(True),
+        )).gino.all()
         return related_wishlists
 
     @staticmethod
