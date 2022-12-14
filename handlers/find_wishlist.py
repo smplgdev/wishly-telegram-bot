@@ -17,7 +17,7 @@ router = Router()
 async def find_friends_wishlist_handler(message: types.Message, state: FSMContext):
     await state.clear()
     related_wishlists = await WishlistCommand.get_related_wishlists(user_tg_id=message.from_user.id)
-    markup = GetInlineKeyboardMarkup.list_user_wishlists(related_wishlists)
+    markup = GetInlineKeyboardMarkup.list_related_wishlists(related_wishlists)
     await message.answer(
         text=strings.friends_wishlists_below,
         reply_markup=markup

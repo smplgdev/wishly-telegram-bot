@@ -7,6 +7,7 @@ def hi_user_message(user_tg_id: int = 0):
 
 
 create_wishlist = "📝 Создать вишлист"
+create_wishlist_inline_button = "➕ Создать вишлист"
 my_wishlists = "📚 Мои вишлисты"
 gift_ideas = "🎁 Идеи для подарка"
 find_friends_wishlist = "🫶 Вишлисты друзей"

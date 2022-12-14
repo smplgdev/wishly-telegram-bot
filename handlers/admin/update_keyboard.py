@@ -12,7 +12,7 @@ from src.utils.photo_link_telegraph import upload_photo
 admin_router = Router()
 
 
-@admin_router.message(AdminFilter(), F.text == 'update_kb')
+@admin_router.message(AdminFilter(), F.text == 'update')
 async def send_bot_update_message(message: types.Message, bot: Bot):
     users = await UserCommand.get_all_users()
     cnt = 0

@@ -5,6 +5,7 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
 from database.pgcommands.commands import WishlistCommand
+from keyboards.callback_factories import WishlistCallback
 from keyboards.inline import GetInlineKeyboardMarkup
 from src import strings
 from states.wishlist import CreateWishlist
@@ -12,9 +13,18 @@ from states.wishlist import CreateWishlist
 router = Router()
 
 
+@router.callback_query(WishlistCallback.filter(F.action == 'create_wishlist'))
+async def create_wishlist_callback_handler(call: types.CallbackQuery, state: FSMContext):
+    await create_wishlist_step1(call.message, state)
+
+
 @router.message(Command('new_wishlist'))
 @router.message(F.text == strings.create_wishlist)
-async def create_wishlist_handler(message: types.message, state: FSMContext):
+async def create_wishlist_handler(message: types.Message, state: FSMContext):
+    await create_wishlist_step1(message, state)
+
+
+async def create_wishlist_step1(message: types.Message, state: FSMContext):
     await state.clear()
     await message.answer(strings.enter_wishlist_title)
     await state.set_state(CreateWishlist.title)

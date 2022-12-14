@@ -66,14 +66,33 @@ class GetInlineKeyboardMarkup:
                                                action="show")
             )
         builder.button(
+            text=strings.create_wishlist_inline_button,
+            callback_data=WishlistCallback(
+                wishlist_id=0,
+                action="create_wishlist"
+            )
+        )
+        builder.adjust(1)
+        return builder.as_markup()
+
+    @staticmethod
+    def list_related_wishlists(wishlists: list[Wishlist]):
+        builder = InlineKeyboardBuilder()
+        for wishlist in wishlists:
+            if not wishlist.is_active:
+                continue
+            builder.button(
+                text=f"{wishlist.title[:32]} ({wishlist.expiration_date.strftime('%d.%m.%Y')})",
+                callback_data=WishlistCallback(wishlist_id=wishlist.id,
+                                               action="show")
+            )
+        builder.button(
             text=strings.find_wishlist,
             callback_data=WishlistCallback(
                 wishlist_id=0,
                 action="find_wishlist"
             )
         )
-        builder.adjust(1)
-        return builder.as_markup()
 
     @staticmethod
     def list_wishlist_items(
