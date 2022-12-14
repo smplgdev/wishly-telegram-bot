@@ -1,5 +1,6 @@
 from aiogram import Router, F, types
 from aiogram.filters import Command
+from aiogram.fsm.context import FSMContext
 
 from database.models.Wishlist import Wishlist
 from database.pgcommands.commands import WishlistCommand, ItemCommand, UserCommand
@@ -39,10 +40,11 @@ async def show_wishlist(message: types.Message, user_id: int, wishlist: Wishlist
 
 @router.message(Command('my_wishlists'))
 @router.message(F.text == strings.my_wishlists)
-async def show_user_wishlists(message: types.Message):
+async def show_user_wishlists(message: types.Message, state: FSMContext):
     """
     List all user's wishlists
     """
+    await state.clear()
     user_wishlists = await WishlistCommand.get_all_user_wishlists(message.from_user.id)
     markup = GetInlineKeyboardMarkup.list_user_wishlists(user_wishlists)
     await message.answer(strings.your_wishlists, reply_markup=markup)
