@@ -133,13 +133,18 @@ class GetInlineKeyboardMarkup:
         return builder.as_markup()
 
     @staticmethod
-    def item_markup(item: Item, wishlist_hashcode: str, is_owner: bool = False):
+    def item_markup(
+            item: Item,
+            wishlist_hashcode: str,
+            is_owner: bool = False
+    ):
         builder = InlineKeyboardBuilder()
         if item.buyer_tg_id is None:
             builder.button(text=strings.i_will_gift_this_item,
                            callback_data=ItemCallback(wishlist_id=item.wishlist_id,
                                                       item_id=item.id,
-                                                      action="gift"))
+                                                      action="gift")
+                           )
         else:
             builder.button(text=strings.someone_else_gift_it,
                            callback_data="null")

@@ -3,17 +3,30 @@ from aiogram.types import InlineQueryResultArticle, InputTextMessageContent
 from aiogram.utils.markdown import hide_link
 
 from database.pgcommands.commands import WishlistCommand, ItemCommand, UserCommand
+from filters.non_logged_users import NonLoggedUserFilter
 from keyboards.inline import GetInlineKeyboardMarkup
-from src import links
+from src import links, strings
 
 router = Router()
 
 
-@router.inline_query(F.query)
-async def show_wishlist_inline_handler(query: types.InlineQuery):
-    if len(query.query) != 4:
-        return
+@router.inline_query(
+    NonLoggedUserFilter()
+)
+async def non_logged_users_inline_query_handler(query: types.InlineQuery):
+    await query.answer(
+        results=[],
+        switch_pm_text=strings.first_log_in,
+        switch_pm_parameter=query.query if query.query else "inline_query",
+        is_personal=True
+    )
 
+
+@router.inline_query(
+    F.query.regexp('^[A-Z0-9]{4}$'),
+    # ChatWithBot(is_with_bot=True)
+)
+async def show_wishlist_inline_handler(query: types.InlineQuery):
     def get_message_text(
             title: str,
             description: str,
