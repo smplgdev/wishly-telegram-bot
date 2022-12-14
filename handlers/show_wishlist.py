@@ -44,7 +44,7 @@ async def show_user_wishlists(message: types.Message):
     List all user's wishlists
     """
     user_wishlists = await WishlistCommand.get_all_user_wishlists(message.from_user.id)
-    markup = await GetInlineKeyboardMarkup.list_user_wishlists(user_wishlists)
+    markup = GetInlineKeyboardMarkup.list_user_wishlists(user_wishlists)
     await message.answer(strings.your_wishlists, reply_markup=markup)
 
 

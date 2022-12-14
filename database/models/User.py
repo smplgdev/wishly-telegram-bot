@@ -24,6 +24,6 @@ class User(db.Model):
     name = db.Column(db.String(64))
     username = db.Column(db.String(32))
     is_active = db.Column(db.Boolean(), default=True)
-
+    is_admin = db.Column(db.Boolean(), default=False)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), onupdate=func.now())

@@ -25,7 +25,10 @@ async def cmd_start(message: Message, state: FSMContext):
                                  deep_link=deep_link,
                                  username=message.from_user.username)
     greet_message = strings.start_text(message.from_user.first_name)
-    await message.answer(greet_message, reply_markup=GetKeyboardMarkup.start(user.name))
+    await message.answer(
+        text=greet_message,
+        reply_markup=GetKeyboardMarkup.start(user.name)
+    )
     if deep_link:
         hashcode = deep_link
         wishlist = await WishlistCommand.get_by_hashcode(hashcode)
@@ -33,8 +36,14 @@ async def cmd_start(message: Message, state: FSMContext):
         wishlist_found_text = strings.wishlist_found_in_deep_link(
             wishlist=wishlist,
             creator_user=creator_user)
+
         await message.answer(wishlist_found_text,
                              reply_markup=GetInlineKeyboardMarkup.go_to_wishlist(wishlist.id))
+
+        await WishlistCommand.add_to_related_wishlish(
+            user_tg_id=user_tg_id,
+            wishlist_id=wishlist.id
+        )
 
 
 def get_deep_link(message_text: str):

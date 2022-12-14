@@ -4,6 +4,7 @@ from asyncpg import UniqueViolationError
 from sqlalchemy import and_
 
 from database.models.Item import Item
+from database.models.RelatedWishlists import RelatedWishlist
 from database.models.User import User
 from database.models.Wishlist import Wishlist
 from src.utils.random_code_generator import generate_random_code
@@ -42,6 +43,17 @@ class UserCommand:
         user = await UserCommand.get(user_tg_id)
         return await user.update(name=new_name).apply()
 
+    @staticmethod
+    async def get_all_users():
+        return await User.query.gino.all()
+
+    @staticmethod
+    async def make_inactive(user_tg_id: int):
+        user = await UserCommand.get(user_tg_id)
+        await user.update(
+            is_active=False
+        ).apply()
+
 
 class WishlistCommand:
     @staticmethod
@@ -60,6 +72,25 @@ class WishlistCommand:
         ).create()
 
     @staticmethod
+    async def add_to_related_wishlish(user_tg_id: int, wishlist_id: int):
+        is_exists = await RelatedWishlist.query.where(and_(
+            RelatedWishlist.user_tg_id == user_tg_id,
+            RelatedWishlist.wishlist_id == wishlist_id,
+        )).gino.first()
+        if not is_exists:
+            related_wishlist = RelatedWishlist(
+                user_tg_id=user_tg_id,
+                wishlist_id=wishlist_id,
+            )
+            try:
+                await related_wishlist.create()
+            except UniqueViolationError:
+                pass
+            finally:
+                return
+        return is_exists
+
+    @staticmethod
     async def get(wishlist_id: int) -> Wishlist:
         return await Wishlist.get(wishlist_id)
 
@@ -68,19 +99,29 @@ class WishlistCommand:
         return await Wishlist.query.where(Wishlist.hashcode == hashcode).gino.first()
 
     @staticmethod
-    async def get_all_user_wishlists(user_tg_id: int) -> list[Wishlist, User]:
-        array = await Wishlist.query.where(and_(Wishlist.creator_tg_id == user_tg_id,
-                                                Wishlist.is_active.is_(True))).gino.all()
-
-        bought_gifts = await Item.query.where(
-            Item.buyer_tg_id == user_tg_id
+    async def get_all_user_wishlists(user_tg_id: int) -> list[Wishlist]:
+        array = await Wishlist.query.where(and_(
+            Wishlist.creator_tg_id == user_tg_id,
+            Wishlist.is_active.is_(True))
         ).gino.all()
-        wishlists_id = set(item.wishlist_id for item in bought_gifts)
 
-        for wishlist_id in wishlists_id:
-            array.append(await Wishlist.query.where(Wishlist.id == wishlist_id).gino.first())
+        # bought_gifts = await Item.query.where(
+        #     Item.buyer_tg_id == user_tg_id
+        # ).gino.all()
+        # wishlists_id = set(item.wishlist_id for item in bought_gifts)
+        #
+        # for wishlist_id in wishlists_id:
+        #     array.append(await Wishlist.query.where(Wishlist.id == wishlist_id).gino.first())
 
         return array
+
+    @staticmethod
+    async def get_related_wishlists(
+            user_tg_id: int,
+    ) -> list[Wishlist]:
+        related_wishlists = await RelatedWishlist.join(Wishlist).select()\
+            .where(RelatedWishlist.user_tg_id == user_tg_id).gino.all()
+        return related_wishlists
 
     @staticmethod
     async def make_inactive(wishlist_id: int):
@@ -125,7 +166,10 @@ class ItemCommand:
         return await Item.get(item_id)
 
     @staticmethod
-    async def gift(giver_tg_id: int, item_id: int) -> bool:
+    async def gift(
+        giver_tg_id: int,
+        item_id: int
+    ) -> bool:
         item = await Item.get(item_id)
         if item.buyer_tg_id is not None:
             return False
@@ -142,3 +186,16 @@ class ItemCommand:
     async def item_counter(wishlist_id: int):
         item_counter = len(await Item.query.where(Item.wishlist_id == wishlist_id).gino.all())
         return item_counter
+
+    @staticmethod
+    async def update(
+            item: Item,
+            **kwargs
+    ):
+        await item.update(
+            **kwargs
+        ).apply()
+
+    @staticmethod
+    async def get_all_items():
+        return await Item.query.gino.all()

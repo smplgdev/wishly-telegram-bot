@@ -55,7 +55,7 @@ class GetInlineKeyboardMarkup:
         return builder.as_markup()
 
     @staticmethod
-    async def list_user_wishlists(wishlists: list[Wishlist]):
+    def list_user_wishlists(wishlists: list[Wishlist]):
         builder = InlineKeyboardBuilder()
         for wishlist in wishlists:
             if not wishlist.is_active:
@@ -65,6 +65,13 @@ class GetInlineKeyboardMarkup:
                 callback_data=WishlistCallback(wishlist_id=wishlist.id,
                                                action="show")
             )
+        builder.button(
+            text=strings.find_wishlist,
+            callback_data=WishlistCallback(
+                wishlist_id=0,
+                action="find_wishlist"
+            )
+        )
         builder.adjust(1)
         return builder.as_markup()
 

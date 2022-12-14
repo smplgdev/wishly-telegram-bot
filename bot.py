@@ -7,6 +7,7 @@ from database.db_gino import db
 from handlers import start, gift_ideas, create_wishlist, add_item, main_menu, show_wishlist, gift_item, settings, \
     edit_wishlist, find_wishlist, delete_item_from_wishlist
 from config import config
+from handlers.admin import update_keyboard
 from handlers.inline import show_wishlist_inline
 
 logging.basicConfig(level=logging.INFO)
@@ -24,6 +25,8 @@ async def main():
     await db.gino.create_all()
 
     dp = Dispatcher()
+
+    dp.include_router(update_keyboard.admin_router)
 
     dp.include_router(show_wishlist_inline.router)
 
