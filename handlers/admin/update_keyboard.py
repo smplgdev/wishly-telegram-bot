@@ -3,7 +3,8 @@ import io
 
 from aiogram import types, F, Router, Bot
 
-from database.pgcommands.commands import UserCommand, ItemCommand
+from database.models.RelatedWishlists import RelatedWishlist
+from database.pgcommands.commands import UserCommand, ItemCommand, WishlistCommand
 from filters.admin_filter import AdminFilter
 from keyboards.default import GetKeyboardMarkup
 from src import strings
@@ -61,3 +62,33 @@ async def update_pictures_admin_handler(message: types.Message, bot: Bot):
             text=photo_link + '\n\n' + thumb_link,
             reply_to_message_id=msg.message_id
         )
+
+
+@admin_router.message(AdminFilter(), F.text == 'update_related')
+async def update_related_wishlists_handler(message: types.Message):
+    users = await UserCommand.get_all_users()
+    for user in users:
+        related_wishlists = list()
+        if user.deep_link:
+            wishlist = await WishlistCommand.get_by_hashcode(user.deep_link)
+            related_wishlists.append(
+                RelatedWishlist(
+                    user_tg_id=user.tg_id,
+                    wishlist_id=wishlist.id
+                )
+            )
+
+        items_gifted = await ItemCommand.get_user_gifts(user_tg_id=user.tg_id)
+        for item in items_gifted:
+            related_wishlists.append(
+                RelatedWishlist(
+                    user_tg_id=user.tg_id,
+                    wishlist_id=item.wishlist_id
+                )
+            )
+        for wishlist in related_wishlists:
+            await WishlistCommand.add_to_related_wishlish(
+                user_tg_id=wishlist.user_tg_id,
+                wishlist_id=wishlist.wishlist_id
+            )
+

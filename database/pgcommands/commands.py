@@ -82,12 +82,7 @@ class WishlistCommand:
                 user_tg_id=user_tg_id,
                 wishlist_id=wishlist_id,
             )
-            try:
-                await related_wishlist.create()
-            except UniqueViolationError:
-                pass
-            finally:
-                return
+            await related_wishlist.create()
         return is_exists
 
     @staticmethod
@@ -199,3 +194,7 @@ class ItemCommand:
     @staticmethod
     async def get_all_items():
         return await Item.query.gino.all()
+
+    @staticmethod
+    async def get_user_gifts(user_tg_id: int) -> list[Item]:
+        return await Item.query.where(Item.buyer_tg_id == user_tg_id).gino.all()
