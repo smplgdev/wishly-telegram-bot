@@ -71,12 +71,13 @@ async def update_related_wishlists_handler(message: types.Message):
         related_wishlists = list()
         if user.deep_link:
             wishlist = await WishlistCommand.get_by_hashcode(user.deep_link)
-            related_wishlists.append(
-                RelatedWishlist(
-                    user_tg_id=user.tg_id,
-                    wishlist_id=wishlist.id
+            if wishlist:
+                related_wishlists.append(
+                    RelatedWishlist(
+                        user_tg_id=user.tg_id,
+                        wishlist_id=wishlist.id
+                    )
                 )
-            )
 
         items_gifted = await ItemCommand.get_user_gifts(user_tg_id=user.tg_id)
         for item in items_gifted:
