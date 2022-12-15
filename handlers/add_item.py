@@ -119,18 +119,18 @@ async def discard_adding_item_handler(call: types.CallbackQuery, state: FSMConte
     await call.message.edit_text(strings.creating_item_discard, reply_markup=markup)
 
 
-@router.message(F.content_type == 'photo')
-async def send_photo_link(message: types.Message):
-    large_photo_bytes = io.BytesIO()
-    await bot.download(message.photo[-1], large_photo_bytes)
-    photo_link = await upload_photo(large_photo_bytes)
-
-    thumb_bytes = io.BytesIO()
-    await bot.download(message.photo[0], thumb_bytes)
-    thumb_link = await upload_photo(thumb_bytes)
-
-    await message.answer(photo_link)
-    await message.answer(thumb_link)
+# @router.message(F.content_type == 'photo')
+# async def send_photo_link(message: types.Message):
+#     large_photo_bytes = io.BytesIO()
+#     await bot.download(message.photo[-1], large_photo_bytes)
+#     photo_link = await upload_photo(large_photo_bytes)
+#
+#     thumb_bytes = io.BytesIO()
+#     await bot.download(message.photo[0], thumb_bytes)
+#     thumb_link = await upload_photo(thumb_bytes)
+#
+#     await message.answer(photo_link)
+#     await message.answer(thumb_link)
 
 
 # @router.message()
