@@ -96,28 +96,24 @@ class GetInlineKeyboardMarkup:
 
     @staticmethod
     def list_wishlist_items(
-            items: list[Item],
             wishlist_id: int,
             wishlist_hashcode: str,
             is_owner: bool = False
     ) -> InlineKeyboardMarkup:
         builder = InlineKeyboardBuilder()
 
-        if len(items) == 0:
-            builder.button(text=strings.user_hasnt_added_any_items,
-                           callback_data="null")
-        else:
-            builder.button(text=strings.show_items_list,
-                           switch_inline_query_current_chat=wishlist_hashcode)
-            # for item in items:
-            #     if item.buyer_tg_id:
-            #         item_title = "✅ " + item.title
-            #     else:
-            #         item_title = item.title
-            #     builder.button(text=item_title,
-            #                    callback_data=ItemCallback(wishlist_id=item.wishlist_id,
-            #                                               item_id=item.id,
-            #                                               action="show"))
+        builder.button(text=strings.show_items_list,
+                       switch_inline_query_current_chat=wishlist_hashcode)
+
+        # for item in items:
+        #     if item.buyer_tg_id:
+        #         item_title = "✅ " + item.title
+        #     else:
+        #         item_title = item.title
+        #     builder.button(text=item_title,
+        #                    callback_data=ItemCallback(wishlist_id=item.wishlist_id,
+        #                                               item_id=item.id,
+        #                                               action="show"))
 
         if is_owner:
             builder.button(text=strings.add_item_to_wishlist,

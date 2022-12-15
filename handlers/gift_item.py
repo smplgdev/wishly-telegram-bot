@@ -2,15 +2,15 @@ from aiogram import Router, F, types
 from aiogram.fsm.context import FSMContext
 
 from database.pgcommands.commands import ItemCommand, UserCommand, WishlistCommand
-from filters.non_logged_users import NonLoggedUserFilter
+from filters.is_logged_user import IsLoggedUserFilter
 from keyboards.callback_factories import ItemCallback
-from keyboards.inline import GetInlineKeyboardMarkup
+
 from src import strings
 
 router = Router()
 
 
-@router.callback_query(NonLoggedUserFilter())
+@router.callback_query(IsLoggedUserFilter(is_logged=False))
 async def non_logged_users_handler(call: types.CallbackQuery):
     await call.answer(strings.not_logged_user, show_alert=True)
 

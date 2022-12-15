@@ -1,3 +1,5 @@
+from aiogram.utils.markdown import hide_link
+
 from database.models.User import User
 from database.models.Wishlist import Wishlist
 
@@ -34,7 +36,7 @@ item_successfully_deleted = "Подарок успешно удалён из в�
 wishlist_title_too_long = "Этот заголовок слишком длинный. Пожалуйста, введите заголовок, длиной менее 64 символов"
 enter_expire_date = "Введите дату праздника в формате дд.мм.гггг" \
                     "\n\nНапример: <i>24.11.2023</i>"
-
+go_to_bot = "Перейти в меню бота"
 past_date_error = "Эта дата уже в прошлом. Введите дату, которая находится в будущем" \
             f"\n\nНапример: <i>24.11.2027</i>"
 
@@ -150,3 +152,24 @@ cant_find_wishlist = "Я не могу найти этот вишлист. По�
 found_wishlist = "Мы нашли этот вишлист!"
 seems_that_someone_gift_it = "Похоже, что этот подарок уже дарит кто-то другой 🫠" \
                              "\n\nВыберите другой подарок из списка"
+
+
+def get_inline_query_message_text(
+    title: str,
+    description: str | bool = None,
+    photo_link: str | bool = None
+) -> str:
+    text_parts = list()
+
+    text_parts.append(
+        f"<b>{title}</b>" + hide_link(photo_link)
+    )
+    if description:
+        text_parts.append(
+            "\n\n" + description
+        )
+
+    return "".join(text_parts)
+
+
+

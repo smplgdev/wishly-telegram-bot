@@ -8,7 +8,7 @@ from handlers import start, gift_ideas, create_wishlist, add_item, main_menu, sh
     edit_wishlist, find_wishlist, delete_item_from_wishlist
 from config import config
 from handlers.admin import update_keyboard
-from handlers.inline import show_wishlist_inline
+from handlers.inline import show_wishlist_inline, non_logged_users_inline
 
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=config.BOT_TOKEN.get_secret_value(), parse_mode='HTML')
@@ -28,6 +28,7 @@ async def main():
 
     dp.include_router(update_keyboard.admin_router)
 
+    dp.include_router(non_logged_users_inline.router)
     dp.include_router(show_wishlist_inline.router)
 
     dp.include_router(main_menu.router)

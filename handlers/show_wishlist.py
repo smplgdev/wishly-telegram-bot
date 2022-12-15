@@ -22,13 +22,11 @@ async def show_wishlist_handler(call: types.CallbackQuery, callback_data: Wishli
 
 async def show_wishlist(message: types.Message, user_id: int, wishlist: Wishlist):
     owner = await UserCommand.get(wishlist.creator_tg_id)
-    wishlist_items = await ItemCommand.get_all_wishlist_items(wishlist.id)
     if owner.tg_id == user_id:
         is_owner = True
     else:
         is_owner = False
     markup = GetInlineKeyboardMarkup.list_wishlist_items(
-        items=wishlist_items,
         wishlist_id=wishlist.id,
         wishlist_hashcode=wishlist.hashcode,
         is_owner=is_owner
