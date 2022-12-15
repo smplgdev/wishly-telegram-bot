@@ -39,6 +39,14 @@ class UserCommand:
         return len(items)
 
     @staticmethod
+    async def update(user_tg_id: int, **kwargs):
+        user = await UserCommand.get(user_tg_id)
+        await user.update(
+            **kwargs
+        ).apply()
+        return user
+
+    @staticmethod
     async def update_name(user_tg_id: int, new_name: str):
         user = await UserCommand.get(user_tg_id)
         return await user.update(name=new_name).apply()

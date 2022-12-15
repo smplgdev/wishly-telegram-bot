@@ -5,7 +5,7 @@ from aiogram.types import BotCommand
 
 from database.db_gino import db
 from handlers import start, gift_ideas, create_wishlist, add_item, main_menu, show_wishlist, gift_item, settings, \
-    edit_wishlist, find_wishlist, delete_item_from_wishlist
+    edit_wishlist, find_wishlist, delete_item_from_wishlist, echo_handler
 from config import config
 from handlers.admin import update_keyboard
 from handlers.inline import show_wishlist_inline, non_logged_users_inline
@@ -42,6 +42,8 @@ async def main():
     dp.include_router(settings.router)
     dp.include_router(create_wishlist.router)
     dp.include_router(add_item.router)
+
+    dp.include_router(echo_handler.echo_router)
 
     await bot.set_my_commands(commands=[
         BotCommand(command='home', description="Главное меню"),
