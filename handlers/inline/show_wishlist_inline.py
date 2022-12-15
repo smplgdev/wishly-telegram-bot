@@ -1,4 +1,5 @@
 import random
+import re
 
 from aiogram import Router, F, types
 from aiogram.types import InlineQueryResultArticle, InputTextMessageContent
@@ -16,7 +17,6 @@ router = Router()
     F.query.regexp('^[A-Z0-9]{4}$'),
     IsWishlistExists(),
     IsLoggedUserFilter(is_logged=True)
-    # ChatWithBot(is_with_bot=True)
 )
 async def show_wishlist_inline_handler(query: types.InlineQuery):
     hashcode = query.query
@@ -52,6 +52,37 @@ async def show_wishlist_inline_handler(query: types.InlineQuery):
         switch_pm_text=f"Вишлист «{wishlist.title}». Автор: {user.name}",
         switch_pm_parameter=f"wl_{wishlist.hashcode}",
         is_personal=True
+    )
+
+
+@router.inline_query(
+    F.query.regexp('^wl_[A-Z0-9]{4}$'),
+)
+async def share_wishlist_inline_query_handler(query: types.InlineQuery):
+    wishlist_hashcode = query.query.split('wl_')[-1]
+    wishlist = await WishlistCommand.get_by_hashcode(wishlist_hashcode)
+    wishlist_owner = await UserCommand.get(wishlist.creator_tg_id)
+    markup = GetInlineKeyboardMarkup.list_wishlist_items(
+        wishlist_id=wishlist.id,
+        wishlist_hashcode=wishlist.hashcode,
+        is_owner=False
+    )
+    await query.answer(
+        results=[
+            InlineQueryResultArticle(
+                    id=wishlist.id,
+                    title=f"Вишлист «{wishlist.title}»",
+                    description=f"Автор: {wishlist_owner.name} 🗓 {wishlist.expiration_date.strftime('%d.%m.%Y')}",
+                    thumb_url=random.choice(links.wishlist_icon_links),
+                    input_message_content=InputTextMessageContent(
+                        message_text=strings.wishlist_title(
+                            wishlist=wishlist,
+                            wishlist_owner=wishlist_owner,
+                        ),
+                    ),
+                    reply_markup=markup,
+            )
+        ]
     )
 
 

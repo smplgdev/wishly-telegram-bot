@@ -105,15 +105,8 @@ class GetInlineKeyboardMarkup:
         builder.button(text=strings.show_items_list,
                        switch_inline_query_current_chat=wishlist_hashcode)
 
-        # for item in items:
-        #     if item.buyer_tg_id:
-        #         item_title = "✅ " + item.title
-        #     else:
-        #         item_title = item.title
-        #     builder.button(text=item_title,
-        #                    callback_data=ItemCallback(wishlist_id=item.wishlist_id,
-        #                                               item_id=item.id,
-        #                                               action="show"))
+        builder.button(text=strings.share_wishlist,
+                       switch_inline_query=f"wl_{wishlist_hashcode}")
 
         if is_owner:
             builder.button(text=strings.add_item_to_wishlist,
