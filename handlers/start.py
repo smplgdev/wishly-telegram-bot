@@ -1,11 +1,12 @@
 import io
 
-from aiogram import Router, F, types
+from aiogram import Router, F, types, Bot
 from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from database.pgcommands.commands import UserCommand, WishlistCommand
+from handlers.main_menu_message import main_menu_send_message
 from keyboards.default import GetKeyboardMarkup
 from keyboards.inline import GetInlineKeyboardMarkup
 from src import strings
@@ -16,7 +17,7 @@ router = Router()
 @router.message(Command('home'))
 @router.message(Command('help'))
 @router.message(CommandStart())
-async def cmd_start(message: Message, state: FSMContext):
+async def cmd_start(message: Message, state: FSMContext, bot: Bot):
     await state.clear()
     deep_link = get_deep_link(message.text)
     user_tg_id = message.from_user.id
@@ -24,11 +25,16 @@ async def cmd_start(message: Message, state: FSMContext):
                                  name=message.from_user.first_name,
                                  deep_link=deep_link,
                                  username=message.from_user.username)
-    greet_message = strings.start_text(message.from_user.first_name)
-    await message.answer(
-        text=greet_message,
-        reply_markup=GetKeyboardMarkup.start(user.name)
+    await main_menu_send_message(
+        bot=bot,
+        user_tg_id=user.tg_id,
+        user_name=user.name
     )
+    # greet_message = strings.start_text(message.from_user.first_name)
+    # await message.answer(
+    #     text=greet_message,
+    #     reply_markup=GetKeyboardMarkup.start(user.name)
+    # )
     if deep_link:
         hashcode = deep_link
         wishlist = await WishlistCommand.get_by_hashcode(hashcode)

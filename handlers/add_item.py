@@ -1,10 +1,9 @@
 import io
 
-from aiogram import Router, F, types
+from aiogram import Router, F, types, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardRemove
 
-from bot import bot
 from database.pgcommands.commands import ItemCommand
 
 from keyboards.callback_factories import WishlistCallback
@@ -56,7 +55,7 @@ async def add_new_item_to_wishlist_step3(message: types.Message, state: FSMConte
 
 
 @router.message(AddItem.photo, F.content_type.in_(['photo', 'text']))
-async def add_new_item_to_wishlist_step4(message: types.Message, state: FSMContext):
+async def add_new_item_to_wishlist_step4(message: types.Message, state: FSMContext, bot: Bot):
     photo_file_id = None
     if message.text != strings.skip_stage and message.photo:
         photo_file_id = message.photo[-1].file_id
