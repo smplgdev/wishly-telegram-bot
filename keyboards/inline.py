@@ -98,7 +98,8 @@ class GetInlineKeyboardMarkup:
     def list_wishlist_items(
             wishlist_id: int,
             wishlist_hashcode: str,
-            is_owner: bool = False
+            show_hide_wishlist_button: bool = False,
+            is_owner: bool = False,
     ) -> InlineKeyboardMarkup:
         builder = InlineKeyboardBuilder()
 
@@ -107,6 +108,11 @@ class GetInlineKeyboardMarkup:
 
         builder.button(text=strings.share_wishlist,
                        switch_inline_query=f"wl_{wishlist_hashcode}")
+
+        if show_hide_wishlist_button:
+            builder.button(text=strings.hide_wishlist,
+                           callback_data=WishlistCallback(wishlist_id=wishlist_id,
+                                                          action="hide"))
 
         if is_owner:
             builder.button(text=strings.add_item_to_wishlist,

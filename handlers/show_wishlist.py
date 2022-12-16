@@ -17,18 +17,30 @@ async def show_wishlist_handler(call: types.CallbackQuery, callback_data: Wishli
     await call.answer(cache_time=5)
     wishlist_id = callback_data.wishlist_id
     wishlist = await WishlistCommand.get(wishlist_id)
-    await show_wishlist(call.message, call.from_user.id, wishlist)
+    await show_wishlist(
+        message=call.message,
+        user_id=call.from_user.id,
+        wishlist=wishlist,
+        show_hide_wishlist_button=True
+    )
 
 
-async def show_wishlist(message: types.Message, user_id: int, wishlist: Wishlist):
+async def show_wishlist(
+        message: types.Message,
+        user_id: int,
+        wishlist: Wishlist,
+        show_hide_wishlist_button: bool = False
+):
     owner = await UserCommand.get(wishlist.creator_tg_id)
     if owner.tg_id == user_id:
         is_owner = True
+        show_hide_wishlist_button = False
     else:
         is_owner = False
     markup = GetInlineKeyboardMarkup.list_wishlist_items(
         wishlist_id=wishlist.id,
         wishlist_hashcode=wishlist.hashcode,
+        show_hide_wishlist_button=show_hide_wishlist_button,
         is_owner=is_owner
     )
 

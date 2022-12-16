@@ -130,6 +130,22 @@ class WishlistCommand:
         return related_wishlists
 
     @staticmethod
+    async def remove_from_related(
+            user_tg_id: int,
+            wishlist_id: int,
+    ) -> bool:
+        related_wishlist = await RelatedWishlist.query.where(and_(
+            RelatedWishlist.user_tg_id == user_tg_id,
+            RelatedWishlist.wishlist_id == wishlist_id
+        )).gino.first()
+
+        if not related_wishlist:
+            return False
+
+        await related_wishlist.delete()
+        return True
+
+    @staticmethod
     async def make_inactive(wishlist_id: int):
         wishlist = await Wishlist.get(wishlist_id)
         await wishlist.update(is_active=False).apply()

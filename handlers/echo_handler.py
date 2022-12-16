@@ -9,6 +9,8 @@ echo_router = Router()
 
 @echo_router.message()
 async def echo_handler(message: types.Message):
+    if message.via_bot:
+        return
     user_tg_id = message.from_user.id
     user = await UserCommand.update(
             user_tg_id=user_tg_id,

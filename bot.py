@@ -5,7 +5,7 @@ from aiogram.types import BotCommand
 
 from database.db_gino import db
 from handlers import start, gift_ideas, create_wishlist, add_item, main_menu, show_wishlist, gift_item, settings, \
-    edit_wishlist, find_wishlist, delete_item_from_wishlist, echo_handler
+    edit_wishlist, find_wishlist, delete_item_from_wishlist, echo_handler, hide_wishlist
 from config import config
 from handlers.admin import update_keyboard
 from handlers.inline import show_wishlist_inline, non_logged_users_inline
@@ -31,6 +31,7 @@ async def main():
     dp.include_router(non_logged_users_inline.router)
     dp.include_router(show_wishlist_inline.router)
 
+    dp.include_router(hide_wishlist.router)
     dp.include_router(main_menu.router)
     dp.include_router(start.router)
     dp.include_router(gift_ideas.router)
