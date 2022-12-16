@@ -18,5 +18,3 @@ async def main_menu_handler(call: types.CallbackQuery, state: FSMContext, bot: B
         user_tg_id=call.from_user.id,
         user_name=user.name
     )
-    # await call.message.answer(strings.start_text(user_first_name=call.from_user.first_name),
-    #                           reply_markup=GetKeyboardMarkup.start(user.name))

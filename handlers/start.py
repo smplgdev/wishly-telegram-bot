@@ -30,11 +30,7 @@ async def cmd_start(message: Message, state: FSMContext, bot: Bot):
         user_tg_id=user.tg_id,
         user_name=user.name
     )
-    # greet_message = strings.start_text(message.from_user.first_name)
-    # await message.answer(
-    #     text=greet_message,
-    #     reply_markup=GetKeyboardMarkup.start(user.name)
-    # )
+
     if deep_link:
         hashcode = deep_link
         wishlist = await WishlistCommand.get_by_hashcode(hashcode)
