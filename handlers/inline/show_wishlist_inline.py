@@ -1,5 +1,4 @@
 import random
-import re
 
 from aiogram import Router, F, types
 from aiogram.types import InlineQueryResultArticle, InputTextMessageContent
@@ -29,7 +28,7 @@ async def show_wishlist_inline_handler(query: types.InlineQuery):
         results.append(InlineQueryResultArticle(
             id=item.id,
             title=item.title if not item.buyer_tg_id else "✅ " + item.title,
-            thumb_url=item.thumb_link if item.thumb_link is not None else links.gift_icon_link,
+            thumb_url=item.thumb_link if item.thumb_link is not None else random.choice(links.gift_icon_links),
             description=item.description,
             input_message_content=InputTextMessageContent(
                 message_text=strings.get_inline_query_message_text(

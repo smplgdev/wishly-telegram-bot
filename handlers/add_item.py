@@ -133,7 +133,7 @@ async def discard_adding_item_handler(call: types.CallbackQuery, state: FSMConte
 
 
 # @router.message()
-# async def send_photo_link(message: types.Message):
+# async def send_photo_link(message: types.Message, bot: Bot):
 #     large_photo_bytes = io.BytesIO()
 #     await bot.download(message.document, large_photo_bytes)
 #     photo_link = await upload_photo(large_photo_bytes)

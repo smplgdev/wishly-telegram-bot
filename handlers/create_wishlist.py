@@ -15,6 +15,7 @@ router = Router()
 
 @router.callback_query(WishlistCallback.filter(F.action == 'create_wishlist'))
 async def create_wishlist_callback_handler(call: types.CallbackQuery, state: FSMContext):
+    await call.answer(cache_time=60)
     await create_wishlist_step1(call.message, state)
 
 
