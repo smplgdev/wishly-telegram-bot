@@ -67,7 +67,7 @@ async def main():
     # storage = RedisStorage(redis=Redis())
     storage = MemoryStorage()
     # Launch bot & skip all missed messages
-    await bot.delete_webhook(drop_pending_updates=True)
+    # await bot.delete_webhook(drop_pending_updates=True)
 
     logging.info("Starting bot...")
     try:
