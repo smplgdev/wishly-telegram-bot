@@ -1,7 +1,11 @@
 import logging
 import asyncio
 from aiogram import Bot, Dispatcher
+
+from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.types import BotCommand
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from aioredis import Redis
 
 from database.db_gino import db
 from handlers import start, gift_ideas, create_wishlist, add_item, main_menu, show_wishlist, gift_item, settings, \
@@ -10,10 +14,13 @@ from config import config
 from handlers.admin import update_keyboard
 from handlers.errors import error_handler
 from handlers.inline import show_wishlist_inline, non_logged_users_inline
+from src.utils.set_scheduled_jobs import job_stores
 
 logging.basicConfig(level=logging.INFO)
-bot = Bot(token=config.BOT_TOKEN.get_secret_value(), parse_mode='HTML')
-ADMINS = config.ADMINS
+bot = Bot(
+    token=config.BOT_TOKEN.get_secret_value(),
+    parse_mode='HTML'
+)
 
 POSTGRES_URI = f'postgresql://{config.PG_USERNAME}:{config.PG_PASSWORD}@{config.ip}/{config.PG_DATABASE}'
 
@@ -57,12 +64,18 @@ async def main():
         BotCommand(command='name', description="Изменить отображаемое имя"),
     ])
 
+    scheduler = AsyncIOScheduler(jobstores=job_stores)
+    storage = RedisStorage(redis=Redis())
     # Launch bot & skip all missed messages
     await bot.delete_webhook(drop_pending_updates=True)
 
     logging.info("Starting bot...")
-    await dp.start_polling(bot)
-
+    try:
+        scheduler.start()
+        await dp.start_polling(bot, storage=storage)
+    finally:
+        await dp.storage.close()
+        await bot.session.close()
 
 if __name__ == '__main__':
     asyncio.run(main())
