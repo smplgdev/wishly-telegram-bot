@@ -6,4 +6,5 @@ gino==1.0.1
 asyncpg==0.26.0
 python-dotenv
 apscheduler
+redis
 aioredis
