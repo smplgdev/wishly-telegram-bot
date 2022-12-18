@@ -1,6 +1,7 @@
 import logging
 import asyncio
 from aiogram import Bot, Dispatcher
+from aiogram.fsm.storage.memory import MemoryStorage
 
 from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.types import BotCommand
@@ -65,7 +66,8 @@ async def main():
     ])
 
     scheduler = AsyncIOScheduler(jobstores=job_stores)
-    storage = RedisStorage(redis=Redis())
+    # storage = RedisStorage(redis=Redis())
+    storage = MemoryStorage()
     # Launch bot & skip all missed messages
     await bot.delete_webhook(drop_pending_updates=True)
 
