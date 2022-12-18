@@ -8,7 +8,7 @@ services:
     volumes:
       - /proc/sys/vm:/mnt/vm
   redis:
-    container_name: redisStorage
+    container_name: redis
     image: 'bitnami/redis:latest'
     restart: 'always'
     environment:
