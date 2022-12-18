@@ -63,7 +63,7 @@ async def main():
         BotCommand(command='name', description="Изменить отображаемое имя"),
     ])
 
-    scheduler = AsyncIOScheduler(jobstores=job_stores)
+    # scheduler = AsyncIOScheduler(jobstores=job_stores)
     # storage = RedisStorage(redis=Redis())
     storage = MemoryStorage()
     # Launch bot & skip all missed messages
@@ -71,7 +71,7 @@ async def main():
 
     logging.info("Starting bot...")
     try:
-        scheduler.start()
+        # scheduler.start()
         await dp.start_polling(bot, storage=storage)
     finally:
         await dp.storage.close()
