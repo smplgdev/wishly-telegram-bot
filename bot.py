@@ -3,10 +3,8 @@ import asyncio
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
-from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.types import BotCommand
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from aioredis import Redis
 
 from database.db_gino import db
 from handlers import start, gift_ideas, create_wishlist, add_item, main_menu, show_wishlist, gift_item, settings, \
