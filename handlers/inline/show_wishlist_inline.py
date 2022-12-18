@@ -70,7 +70,7 @@ async def share_wishlist_inline_query_handler(query: types.InlineQuery):
         results=[
             InlineQueryResultArticle(
                     id=wishlist.id,
-                    title=f"Вишлист «{wishlist.title}»",
+                    title=f"Вишлист «{wishlist.title}» #{wishlist.hashcode}",
                     description=f"Автор: {wishlist_owner.name} 🗓 {wishlist.expiration_date.strftime('%d.%m.%Y')}",
                     thumb_url=random.choice(links.wishlist_icon_links),
                     input_message_content=InputTextMessageContent(
@@ -99,7 +99,7 @@ async def other_inline_queries_handler(query: types.InlineQuery):
         results.append(
             InlineQueryResultArticle(
                 id=wishlist.id,
-                title=f"Вишлист «{wishlist.title}»",
+                title=f"Вишлист «{wishlist.title}» #{wishlist.hashcode}",
                 description=f"Автор: {wishlist_owner.name} 🗓 {wishlist.expiration_date.strftime('%d.%m.%Y')}",
                 thumb_url=random.choice(links.wishlist_icon_links),
                 input_message_content=InputTextMessageContent(

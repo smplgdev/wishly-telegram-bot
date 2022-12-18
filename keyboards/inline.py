@@ -106,8 +106,16 @@ class GetInlineKeyboardMarkup:
         builder.button(text=strings.show_items_list,
                        switch_inline_query_current_chat=wishlist_hashcode)
 
-        builder.button(text=strings.share_wishlist,
-                       switch_inline_query=f"wl_{wishlist_hashcode}")
+        # builder.button(text=strings.share_wishlist,
+        #                switch_inline_query=f"wl_{wishlist_hashcode}")
+
+        # builder.button(
+        #     text=strings.share_wishlist,
+        #     callback_data=WishlistCallback(
+        #         wishlist_id=wishlist_id,
+        #         action="share",
+        #     )
+        # )
 
         if show_hide_wishlist_button:
             builder.button(text=strings.hide_wishlist,

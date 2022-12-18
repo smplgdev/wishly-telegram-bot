@@ -120,7 +120,8 @@ def wishlist_title(wishlist: Wishlist, wishlist_owner: User):
            f"\nАвтор: <b>{wishlist_owner.name}</b>"
     if wishlist_owner.username:
         text += f" @{wishlist_owner.username}"
-    text += f"\n\nСсылка на вишлист:\nhttps://t.me/wishlyRobot?start=wl_{wishlist.hashcode}"
+    text += f"\n\nСсылка на вишлист:\nhttps://t.me/wishlyRobot?start=wl_{wishlist.hashcode}" \
+            f"\n(Отправьте эту ссылку друзьям или выложите в соцсети, чтобы все могли посмотреть ваш вишлист)"
     return text
 
 
@@ -174,6 +175,4 @@ def get_inline_query_message_text(
         )
 
     return "".join(text_parts)
-
-
 
