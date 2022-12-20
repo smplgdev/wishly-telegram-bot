@@ -13,7 +13,7 @@ from config import config
 from handlers.admin import update_keyboard
 from handlers.errors import error_handler
 from handlers.inline import show_wishlist_inline, non_logged_users_inline
-from src.utils.set_scheduled_jobs import job_stores
+from src.utils.set_scheduled_jobs import set_scheduled_jobs
 
 logging.basicConfig(level=logging.INFO)
 bot = Bot(
@@ -25,6 +25,9 @@ POSTGRES_URI = f'postgresql://{config.PG_USERNAME}:{config.PG_PASSWORD}@{config.
 
 
 async def main():
+    scheduler = AsyncIOScheduler()
+    set_scheduled_jobs(scheduler, bot)
+
     logging.info("Setup connection with PostgreSQL")
     await db.set_bind(POSTGRES_URI)
 
@@ -63,15 +66,13 @@ async def main():
         BotCommand(command='name', description="Изменить отображаемое имя"),
     ])
 
-    # scheduler = AsyncIOScheduler(jobstores=job_stores)
-    # storage = RedisStorage(redis=Redis())
     storage = MemoryStorage()
     # Launch bot & skip all missed messages
     # await bot.delete_webhook(drop_pending_updates=True)
 
     logging.info("Starting bot...")
     try:
-        # scheduler.start()
+        scheduler.start()
         await dp.start_polling(bot, storage=storage)
     finally:
         await dp.storage.close()

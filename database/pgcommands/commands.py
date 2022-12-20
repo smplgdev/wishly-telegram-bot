@@ -1,3 +1,4 @@
+import datetime
 from datetime import date
 
 from asyncpg import UniqueViolationError
@@ -96,6 +97,35 @@ class WishlistCommand:
     @staticmethod
     async def get(wishlist_id: int) -> Wishlist:
         return await Wishlist.get(wishlist_id)
+
+    @staticmethod
+    async def get_all_parties_wishlists_in_week():
+        today = datetime.date.today()
+        wishlists = await Wishlist.query.where(and_(
+            Wishlist.is_active.is_(True),
+            Wishlist.expiration_date <= today + datetime.timedelta(days=15)
+        )).gino.all()
+        return wishlists
+
+    @staticmethod
+    async def get_all_related_users(wishlist_id: int) -> list[User]:
+        relates: list[RelatedWishlist] = await RelatedWishlist.query.where(RelatedWishlist.wishlist_id == wishlist_id).gino.all()
+        users = set()
+        for relate in relates:
+            users.add(
+                await User.query.where(relate.user_tg_id == User.tg_id).gino.first()
+            )
+        return list(users)
+
+    @staticmethod
+    async def get_all_gifts(wishlist_id: int) -> list[int]:
+        gifted_items = await Item.query.where(and_(
+            Item.buyer_tg_id.is_(not None),
+            Item.wishlist_id == wishlist_id
+        )).gino.all()
+        for item in gifted_items:
+            users_ids.add(item.buyer_tg_id)
+        return list(users_ids)
 
     @staticmethod
     async def get_by_hashcode(hashcode: str) -> Wishlist:
