@@ -6,9 +6,7 @@ from src import strings
 
 class GetKeyboardMarkup:
     @staticmethod
-    def start(
-            user_name: str,
-    ):
+    def start(user_name: str):
         builder = ReplyKeyboardBuilder()
         builder.row(
             KeyboardButton(text=strings.create_wishlist),
