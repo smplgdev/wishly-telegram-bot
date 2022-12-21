@@ -53,6 +53,18 @@ class GetInlineKeyboardMarkup:
         return builder.as_markup()
 
     @staticmethod
+    def go_back_to_wishlist(wishlist_id: int):
+        builder = InlineKeyboardBuilder()
+        builder.button(
+            text=strings.go_back_without_changes,
+            callback_data=WishlistCallback(
+                wishlist_id=wishlist_id,
+                action="go_back"
+            )
+        )
+        return builder.as_markup()
+
+    @staticmethod
     def main_menu_or_another_item(wishlist_id: int):
         builder = InlineKeyboardBuilder()
         builder.button(
@@ -212,6 +224,20 @@ class GetInlineKeyboardMarkup:
             callback_data=WishlistCallback(
                 wishlist_id=wishlist_id,
                 action="add_item"
+            )
+        )
+        builder.button(
+            text=strings.change_title_button_text,
+            callback_data=WishlistCallback(
+                wishlist_id=wishlist_id,
+                action="change_title"
+            )
+        )
+        builder.button(
+            text=strings.change_date_button_text,
+            callback_data=WishlistCallback(
+                wishlist_id=wishlist_id,
+                action="change_date"
             )
         )
         builder.button(

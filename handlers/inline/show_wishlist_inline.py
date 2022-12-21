@@ -22,8 +22,18 @@ async def show_wishlist_inline_handler(query: types.InlineQuery):
     wishlist = await WishlistCommand.find_by_hashcode(hashcode)
 
     items = await ItemCommand.get_all_wishlist_items(wishlist.id)
-    results = []
-
+    results = list()
+    results.append(
+        InlineQueryResultArticle(
+            id=0,
+            title=strings.hide_wishlist_items,
+            thumb_url="https://telegra.ph/file/3fe119b1b863de24718bb.png",
+            description=None if items else strings.no_items_in_wishlist,
+            input_message_content=InputTextMessageContent(
+                message_text=strings.wishlist_list_was_closed
+            )
+        )
+    )
     for item in items:
         results.append(InlineQueryResultArticle(
             id=item.id,

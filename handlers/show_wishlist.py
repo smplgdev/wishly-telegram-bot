@@ -11,7 +11,7 @@ from src import strings
 router = Router()
 
 
-@router.callback_query(WishlistCallback.filter(F.action == 'show'))
+@router.callback_query(WishlistCallback.filter(F.action.in_(["show", "go_back"])))
 async def show_wishlist_handler(call: types.CallbackQuery, callback_data: WishlistCallback):
     await call.answer(cache_time=5)
     wishlist_id = callback_data.wishlist_id

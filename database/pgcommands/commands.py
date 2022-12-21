@@ -81,6 +81,14 @@ class WishlistCommand:
         ).create()
 
     @staticmethod
+    async def update(
+            wishlist_id: int,
+            **kwargs
+    ):
+        wishlist = await WishlistCommand.get(wishlist_id)
+        await wishlist.update(**kwargs).apply()
+
+    @staticmethod
     async def add_to_related_wishlish(user_tg_id: int, wishlist_id: int):
         is_exists = await RelatedWishlist.query.where(and_(
             RelatedWishlist.user_tg_id == user_tg_id,
