@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from sqlalchemy import func
 
 from database.db_gino import db
@@ -27,3 +25,4 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean(), default=False)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), onupdate=func.now())
+    birthday_date = db.Column(db.Date())
