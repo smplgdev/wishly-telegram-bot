@@ -99,11 +99,11 @@ class WishlistCommand:
         return await Wishlist.get(wishlist_id)
 
     @staticmethod
-    async def get_all_parties_wishlists_in_week():
+    async def get_all_parties_wishlists_in_days(days: int = 7):
         today = datetime.date.today()
         wishlists = await Wishlist.query.where(and_(
             Wishlist.is_active.is_(True),
-            Wishlist.expiration_date <= today + datetime.timedelta(days=15)
+            Wishlist.expiration_date <= today + datetime.timedelta(days=days)
         )).gino.all()
         return wishlists
 
@@ -119,6 +119,7 @@ class WishlistCommand:
 
     @staticmethod
     async def get_all_gifts(wishlist_id: int) -> list[int]:
+        users_ids = set()
         gifted_items = await Item.query.where(and_(
             Item.buyer_tg_id.is_(not None),
             Item.wishlist_id == wishlist_id
