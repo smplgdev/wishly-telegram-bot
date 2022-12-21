@@ -124,7 +124,7 @@ def wishlist_title(wishlist: Wishlist, wishlist_owner: User):
     if wishlist_owner.username:
         text += f" @{wishlist_owner.username}"
     text += f"\n\nСсылка на вишлист:\nhttps://t.me/wishlyRobot?start=wl_{wishlist.hashcode}" \
-            f"\n(Отправьте эту ссылку друзьям или выложите в соцсети, чтобы все могли посмотреть ваш вишлист)"
+            f"\n(Отправьте эту ссылку друзьям или выложите в соцсети, чтобы все могли посмотреть этот вишлист)"
     return text
 
 

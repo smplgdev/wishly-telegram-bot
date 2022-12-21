@@ -103,7 +103,7 @@ class WishlistCommand:
         today = datetime.date.today()
         wishlists = await Wishlist.query.where(and_(
             Wishlist.is_active.is_(True),
-            Wishlist.expiration_date <= today + datetime.timedelta(days=days)
+            Wishlist.expiration_date == today + datetime.timedelta(days=days)
         )).gino.all()
         return wishlists
 

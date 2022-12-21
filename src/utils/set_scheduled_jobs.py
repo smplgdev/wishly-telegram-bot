@@ -14,4 +14,4 @@ def set_scheduled_jobs(
 ):
     scheduler.add_job(send_message_to_admin, CronTrigger(hour=6, minute=57), args=(bot,))
     scheduler.add_job(week_before_party, CronTrigger(hour=7, minute=2), args=(bot,))
-    scheduler.add_job(send_messages_to_wishlists_owner, CronTrigger(hour=11, minute=30), args=(bot,))
+    scheduler.add_job(send_messages_to_wishlists_owner, CronTrigger(hour=14, minute=30), args=(bot,))
