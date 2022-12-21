@@ -21,27 +21,29 @@ async def cmd_start(message: Message, state: FSMContext, bot: Bot):
     await state.clear()
     deep_link = get_deep_link(message.text)
     user_tg_id = message.from_user.id
-    user = await UserCommand.add(tg_id=user_tg_id,
-                                 name=message.from_user.first_name,
-                                 deep_link=deep_link,
-                                 username=message.from_user.username)
+    user = await UserCommand.add(
+        tg_id=user_tg_id,
+        name=message.from_user.first_name,
+        deep_link=deep_link,
+        username=message.from_user.username
+    )
     await main_menu_send_message(
         bot=bot,
         user_tg_id=user.tg_id,
         user_name=user.name
     )
-
     if deep_link:
         hashcode = deep_link
         wishlist = await WishlistCommand.get_by_hashcode(hashcode)
         creator_user = await UserCommand.get(wishlist.creator_tg_id)
         wishlist_found_text = strings.wishlist_found_in_deep_link(
             wishlist=wishlist,
-            creator_user=creator_user)
-
-        await message.answer(wishlist_found_text,
-                             reply_markup=GetInlineKeyboardMarkup.go_to_wishlist(wishlist.id))
-
+            creator_user=creator_user
+        )
+        await message.answer(
+            wishlist_found_text,
+            reply_markup=GetInlineKeyboardMarkup.go_to_wishlist(wishlist.id)
+        )
         await WishlistCommand.add_to_related_wishlish(
             user_tg_id=user_tg_id,
             wishlist_id=wishlist.id

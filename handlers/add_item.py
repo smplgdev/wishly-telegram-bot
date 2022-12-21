@@ -16,7 +16,7 @@ from states.item import AddItem
 router = Router()
 
 
-@router.callback_query(WishlistCallback.filter(F.action.in_(["add", "add_another_item"])))
+@router.callback_query(WishlistCallback.filter(F.action.in_(["add_item", "add_another_item"])))
 async def add_new_item_to_wishlist(call: types.CallbackQuery, state: FSMContext, callback_data: WishlistCallback):
     wishlist_id = callback_data.wishlist_id
     item_counter = await ItemCommand.item_counter(wishlist_id)

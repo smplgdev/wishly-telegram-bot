@@ -74,7 +74,7 @@ async def share_wishlist_inline_query_handler(query: types.InlineQuery):
                     description=f"Автор: {wishlist_owner.name} 🗓 {wishlist.expiration_date.strftime('%d.%m.%Y')}",
                     thumb_url=random.choice(links.wishlist_icon_links),
                     input_message_content=InputTextMessageContent(
-                        message_text=strings.wishlist_title(
+                        message_text=strings.wishlist_detailed_information(
                             wishlist=wishlist,
                             wishlist_owner=wishlist_owner,
                         ),
@@ -103,7 +103,7 @@ async def other_inline_queries_handler(query: types.InlineQuery):
                 description=f"Автор: {wishlist_owner.name} 🗓 {wishlist.expiration_date.strftime('%d.%m.%Y')}",
                 thumb_url=random.choice(links.wishlist_icon_links),
                 input_message_content=InputTextMessageContent(
-                    message_text=strings.wishlist_title(
+                    message_text=strings.wishlist_detailed_information(
                         wishlist=wishlist,
                         wishlist_owner=wishlist_owner,
                     ),

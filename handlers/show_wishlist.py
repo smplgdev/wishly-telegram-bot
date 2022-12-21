@@ -13,7 +13,6 @@ router = Router()
 
 @router.callback_query(WishlistCallback.filter(F.action == 'show'))
 async def show_wishlist_handler(call: types.CallbackQuery, callback_data: WishlistCallback):
-    # await call.message.delete_reply_markup()
     await call.answer(cache_time=5)
     wishlist_id = callback_data.wishlist_id
     wishlist = await WishlistCommand.get(wishlist_id)
@@ -31,6 +30,9 @@ async def show_wishlist(
         wishlist: Wishlist,
         show_hide_wishlist_button: bool = False
 ):
+    """
+    Shows selected wishlist description and button that shows gifts. If owner: edit wishlist button
+    """
     owner = await UserCommand.get(wishlist.creator_tg_id)
     if owner.tg_id == user_id:
         is_owner = True
@@ -44,7 +46,7 @@ async def show_wishlist(
         is_owner=is_owner
     )
 
-    text = strings.wishlist_title(wishlist, owner) + '\n\n' + strings.items_list
+    text = strings.wishlist_detailed_information(wishlist, owner)
     await message.answer(text, reply_markup=markup)
 
 

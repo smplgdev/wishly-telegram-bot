@@ -139,14 +139,6 @@ class WishlistCommand:
             Wishlist.is_active.is_(True))
         ).gino.all()
 
-        # bought_gifts = await Item.query.where(
-        #     Item.buyer_tg_id == user_tg_id
-        # ).gino.all()
-        # wishlists_id = set(item.wishlist_id for item in bought_gifts)
-        #
-        # for wishlist_id in wishlists_id:
-        #     array.append(await Wishlist.query.where(Wishlist.id == wishlist_id).gino.first())
-
         return array
 
     @staticmethod
