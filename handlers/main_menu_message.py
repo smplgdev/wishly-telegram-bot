@@ -14,5 +14,7 @@ async def main_menu_send_message(
         text=strings.start_text(
             user_first_name=user_name
         ),
-        reply_markup=GetKeyboardMarkup.start(user_name)
+        reply_markup=GetKeyboardMarkup.start(
+            user_name=user_name,
+        )
     )
