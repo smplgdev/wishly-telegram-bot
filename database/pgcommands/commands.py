@@ -120,7 +120,7 @@ class WishlistCommand:
         today = datetime.date.today()
         wishlists = await Wishlist.query.where(and_(
             Wishlist.is_active.is_(True),
-            Wishlist.created_at + datetime.timedelta(days=30) >= today
+            Wishlist.created_at + datetime.timedelta(days=days) >= today
         )).gino.all()
         array = list()
         for wishlist in wishlists:
