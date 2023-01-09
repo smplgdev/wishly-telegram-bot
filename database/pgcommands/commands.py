@@ -117,17 +117,15 @@ class WishlistCommand:
 
     @staticmethod
     async def get_empty_wishlists_in_days(days: int = 1) -> list[Wishlist]:
-        today = datetime.date.today()
         wishlists = await Wishlist.query.where(and_(
             Wishlist.is_active.is_(True),
-            Wishlist.created_at + datetime.timedelta(days=days) >= today
+            Wishlist.created_at + datetime.timedelta(days=days) >= datetime.datetime.now()
         )).gino.all()
         array = list()
         for wishlist in wishlists:
             items = await ItemCommand.get_all_wishlist_items(wishlist.id)
-            if len(items) != 0:
-                continue
-            array.append(wishlist)
+            if len(items) == 0:
+                array.append(wishlist)
         return array
 
     @staticmethod

@@ -13,6 +13,7 @@ from config import config
 from handlers.admin import update_keyboard
 from handlers.errors import error_handler
 from handlers.inline import show_wishlist_inline, non_logged_users_inline
+from src.utils.message_to_owners_empty_wishlists import send_message_to_owners_of_empty_wishlists
 from src.utils.set_scheduled_jobs import set_scheduled_jobs
 
 logging.basicConfig(level=logging.INFO)
