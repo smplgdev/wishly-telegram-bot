@@ -31,7 +31,7 @@ async def show_wishlist(
         show_hide_wishlist_button: bool = False
 ):
     """
-    Shows selected wishlist description and button that shows gifts. If owner: edit wishlist button
+    Shows selected wishlist description and button that shows gifts. If owner: also edit wishlist button
     """
     owner = await UserCommand.get(wishlist.creator_tg_id)
     if owner.tg_id == user_id:

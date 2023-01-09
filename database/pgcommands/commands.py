@@ -116,6 +116,21 @@ class WishlistCommand:
         return wishlists
 
     @staticmethod
+    async def get_empty_wishlists_in_days(days: int = 1) -> list[Wishlist]:
+        today = datetime.date.today()
+        wishlists = await Wishlist.query.where(and_(
+            Wishlist.is_active.is_(True),
+            Wishlist.created_at + datetime.timedelta(days=30) >= today
+        )).gino.all()
+        array = list()
+        for wishlist in wishlists:
+            items = await ItemCommand.get_all_wishlist_items(wishlist.id)
+            if len(items) != 0:
+                continue
+            array.append(wishlist)
+        return array
+
+    @staticmethod
     async def get_all_related_users(wishlist_id: int) -> list[User]:
         relates: list[RelatedWishlist] = await RelatedWishlist.query.where(RelatedWishlist.wishlist_id == wishlist_id).gino.all()
         users = set()
@@ -144,6 +159,7 @@ class WishlistCommand:
     async def get_all_user_wishlists(user_tg_id: int) -> list[Wishlist]:
         array = await Wishlist.query.where(and_(
             Wishlist.creator_tg_id == user_tg_id,
+            Wishlist.expiration_date >= datetime.date.today(),
             Wishlist.is_active.is_(True))
         ).gino.all()
 
@@ -156,6 +172,7 @@ class WishlistCommand:
         related_wishlists = await RelatedWishlist.join(Wishlist).select()\
             .where(and_(
                     RelatedWishlist.user_tg_id == user_tg_id,
+                    Wishlist.expiration_date >= datetime.date.today(),
                     Wishlist.is_active.is_(True),
         )).gino.all()
         return related_wishlists
