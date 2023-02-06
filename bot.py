@@ -1,17 +1,16 @@
-import logging
 import asyncio
+import logging
+
 from aiogram import Bot, Dispatcher
-from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.storage.redis import RedisStorage
-from apscheduler.jobstores.redis import RedisJobStore
-
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from aioredis import Redis
+from apscheduler.jobstores.redis import RedisJobStore
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
+from config import config
 from database.db_gino import db
 from handlers import start, gift_ideas, create_wishlist, add_item, main_menu, show_wishlist, gift_item, settings, \
     edit_wishlist, find_wishlist, delete_item_from_wishlist, echo_handler, hide_wishlist
-from config import config
 from handlers.admin import update_keyboard
 from handlers.errors import error_handler
 from handlers.inline import show_wishlist_inline, non_logged_users_inline
@@ -28,10 +27,10 @@ bot = Bot(
 
 
 async def main():
-    # jobstores = {
-    #     "default": RedisJobStore()
-    # }
-    scheduler = AsyncIOScheduler()
+    jobstores = {
+        "default": RedisJobStore()
+    }
+    scheduler = AsyncIOScheduler(jobstores=jobstores)
     set_scheduled_jobs(scheduler, bot)
 
     logging.info("Setup connection with PostgreSQL")
@@ -44,7 +43,7 @@ async def main():
         host=config.redis_ip,
         port=6379
     )
-    storage = MemoryStorage()
+    storage = RedisStorage(redis=redis)
 
     dp = Dispatcher(storage=storage)
 
