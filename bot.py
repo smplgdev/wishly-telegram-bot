@@ -2,6 +2,7 @@ import logging
 import asyncio
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.redis import RedisStorage
+from apscheduler.jobstores.redis import RedisJobStore
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from redis import Redis
@@ -26,7 +27,10 @@ bot = Bot(
 
 
 async def main():
-    scheduler = AsyncIOScheduler()
+    jobstores = {
+        "default": RedisJobStore()
+    }
+    scheduler = AsyncIOScheduler(jobstores=jobstores)
     set_scheduled_jobs(scheduler, bot)
 
     logging.info("Setup connection with PostgreSQL")
