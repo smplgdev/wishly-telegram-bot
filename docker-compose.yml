@@ -14,6 +14,14 @@ services:
     volumes:
       - .:/src
 
+  redis:
+    container_name: redis_wishly
+    image: 'bitnami/redis:latest'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - batya_botnet
+
 networks:
   batya_botnet:
     external: true

@@ -1,9 +1,10 @@
 import logging
 import asyncio
 from aiogram import Bot, Dispatcher
-from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.storage.redis import RedisStorage
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from redis import Redis
 
 from database.db_gino import db
 from handlers import start, gift_ideas, create_wishlist, add_item, main_menu, show_wishlist, gift_item, settings, \
@@ -34,7 +35,13 @@ async def main():
     logging.info("Create models")
     await db.gino.create_all()
 
-    dp = Dispatcher()
+    redis = Redis(
+        host=config.redis_ip,
+        port=6379
+    )
+    storage = RedisStorage(redis=redis)
+
+    dp = Dispatcher(storage=storage)
 
     dp.include_router(error_handler.error_router)
 
@@ -60,7 +67,6 @@ async def main():
 
     await set_bot_commands(bot)
 
-    storage = MemoryStorage()
     # Launch bot & skip all missed messages
     # await bot.delete_webhook(drop_pending_updates=True)
 
