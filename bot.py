@@ -45,7 +45,8 @@ async def main():
     await db.gino.create_all()
 
     redis = Redis(
-        **redis_connect_args
+        host=config.redis_ip,
+        port=6379
     )
     storage = RedisStorage(redis=redis)
 
