@@ -76,7 +76,7 @@ async def main():
 
     logging.info("Starting bot...")
     try:
-        # scheduler.start()
+        scheduler.start()
         await dp.start_polling(bot, storage=storage)
     finally:
         await dp.storage.close()
