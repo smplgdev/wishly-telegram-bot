@@ -27,15 +27,7 @@ bot = Bot(
 
 
 async def main():
-    redis_connect_args = {
-        "host": config.redis_ip,
-        "port": 6379
-    }
-
-    jobstores = {
-        "default": RedisJobStore(**redis_connect_args)
-    }
-    scheduler = AsyncIOScheduler(jobstores=jobstores)
+    scheduler = AsyncIOScheduler()
     set_scheduled_jobs(scheduler, bot)
 
     logging.info("Setup connection with PostgreSQL")
