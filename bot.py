@@ -27,10 +27,15 @@ bot = Bot(
 
 
 async def main():
-    # jobstores = {
-    #     "default": RedisJobStore()
-    # }
-    scheduler = AsyncIOScheduler()
+    redis_connect_args = {
+        "host": config.redis_ip,
+        "port": 6379
+    }
+
+    jobstores = {
+        "default": RedisJobStore(**redis_connect_args)
+    }
+    scheduler = AsyncIOScheduler(jobstores=jobstores)
     set_scheduled_jobs(scheduler, bot)
 
     logging.info("Setup connection with PostgreSQL")
@@ -40,8 +45,7 @@ async def main():
     await db.gino.create_all()
 
     redis = Redis(
-        host=config.redis_ip,
-        port=6379
+        **redis_connect_args
     )
     storage = RedisStorage(redis=redis)
 
