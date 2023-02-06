@@ -3,7 +3,6 @@ import asyncio
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
-from aiogram.types import BotCommand
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from database.db_gino import db
@@ -13,16 +12,16 @@ from config import config
 from handlers.admin import update_keyboard
 from handlers.errors import error_handler
 from handlers.inline import show_wishlist_inline, non_logged_users_inline
-from src.utils.message_to_owners_empty_wishlists import send_message_to_owners_of_empty_wishlists
+from src.utils.set_bot_commands import set_bot_commands
 from src.utils.set_scheduled_jobs import set_scheduled_jobs
 
 logging.basicConfig(level=logging.INFO)
+POSTGRES_URI = f'postgresql://{config.PG_USERNAME}:{config.PG_PASSWORD}@{config.ip}/{config.PG_DATABASE}'
+
 bot = Bot(
     token=config.BOT_TOKEN.get_secret_value(),
     parse_mode='HTML'
 )
-
-POSTGRES_URI = f'postgresql://{config.PG_USERNAME}:{config.PG_PASSWORD}@{config.ip}/{config.PG_DATABASE}'
 
 
 async def main():
@@ -59,13 +58,7 @@ async def main():
 
     dp.include_router(echo_handler.echo_router)
 
-    await bot.set_my_commands(commands=[
-        BotCommand(command='home', description="Главное меню"),
-        BotCommand(command='new_wishlist', description="Создать новый вишлист"),
-        BotCommand(command='my_wishlists', description="Получить список моих вишлистов"),
-        BotCommand(command='find', description="Найти вишлист друга по хэшу"),
-        BotCommand(command='name', description="Изменить отображаемое имя"),
-    ])
+    await set_bot_commands(bot)
 
     storage = MemoryStorage()
     # Launch bot & skip all missed messages
