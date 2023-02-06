@@ -5,7 +5,7 @@ from aiogram.fsm.storage.redis import RedisStorage
 from apscheduler.jobstores.redis import RedisJobStore
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from redis import Redis
+from aioredis import Redis
 
 from database.db_gino import db
 from handlers import start, gift_ideas, create_wishlist, add_item, main_menu, show_wishlist, gift_item, settings, \
@@ -76,7 +76,7 @@ async def main():
 
     logging.info("Starting bot...")
     try:
-        scheduler.start()
+        # scheduler.start()
         await dp.start_polling(bot, storage=storage)
     finally:
         await dp.storage.close()
