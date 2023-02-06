@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     PG_PASSWORD: str
     PG_DATABASE: str
     ip: str
+    redis_ip: str
 
     class Config:
         env_file = ".env"
