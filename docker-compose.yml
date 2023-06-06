@@ -5,7 +5,7 @@ services:
     container_name: wishly
     build:
       context: .
-    command: python bot.py
+    command: python __main__.py
     restart: always
     networks:
       - batya_botnet
