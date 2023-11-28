@@ -20,4 +20,4 @@ class Settings(BaseSettings):
 
 config = Settings()
 
-DB_URI = f'postgresql+asyncpg://{config.DB_USERNAME}:{config.DB_PASSWORD}@{config.DB_HOST}:5432/{config.DB_DATABASE}'
+DB_URI = f'postgresql+asyncpg://{config.DB_USERNAME}:{config.DB_PASSWORD}@{config.DB_HOST}:{config.DB_PORT}/{config.DB_DATABASE}'
