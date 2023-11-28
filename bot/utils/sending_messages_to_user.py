@@ -34,7 +34,7 @@ async def week_before_party(bot: Bot):
                 owner=owner,
                 items=items
             )
-            markup = GetInlineKeyboardMarkup.list_wishlist_items(
+            markup = GetInlineKeyboardMarkup.wishlist_items_keyboard(
                 wishlist_id=wishlist.id,
                 wishlist_hashcode=wishlist.hashcode,
                 show_hide_wishlist_button=False,

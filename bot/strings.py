@@ -3,13 +3,13 @@ from typing import Iterable
 
 from aiogram.utils.markdown import hide_link
 
-from database.models.Item import Item
-from database.models.User import User
-from database.models.Wishlist import Wishlist
+from bot.config_reader import config
+from bot.db.models import Item, User, Wishlist
 
 
-def hi_user_message(user_tg_id: int = 0):
-    return f"Hi, user #{user_tg_id}"
+class AddItemStages:
+    ITEM_DESCRIPTION = "item_description"
+    ITEM_PHOTO = "item_photo"
 
 
 create_wishlist = "📝 Создать вишлист"
@@ -74,10 +74,9 @@ def your_wishlist_is_still_empty(wishlist: Wishlist) -> str:
 
 
 def wishlist_successfully_created(wishlist: Wishlist):
-    return f"Вишлист «<b>{wishlist.title}</b>» успешно создан!" \
-           f"\n\nЕго уникальный номер: #{wishlist.hashcode}, " \
-           f"он также доступен по ссылке:\nhttps://t.me/wishlyRobot?start=wl_{wishlist.hashcode}" \
-           "\n\nТеперь добавь подарки, которые хочешь получить, " \
+    return f"Вишлист «<b>{wishlist.title}</b>» успешно создан! " \
+           f"Он доступен по ссылке:\nt.me/{config.BOT_USERNAME}?start=wl_{wishlist.hashcode}" \
+           "\n\nТеперь добавь подарки, которые ты хочешь получить, " \
            "а затем отправь эту ссылку друзьям или выложи её в свои соцсети, "\
            "чтобы все знали, что тебе подарить!"
 
@@ -121,8 +120,15 @@ def wishlist_found_in_deep_link(wishlist: Wishlist, creator_user: User):
     return text
 
 
+wishlist_not_found = "Похоже, что вишлист, к которому вы хотели перейти, не существует или был удален :("
+
+
 go_to_friend_wishlist = "Перейти в вишлист друга"
-your_wishlists = "Список ваших вишлистов:"
+your_wishlists = ("Ниже находится список вишлистов вас и ваших друзей"
+                  "\n\nВаши вишлисты отмечены знаком 💎")
+
+we_cant_delete_item = ("Похоже, что этот подарок уже кто-то выбрал в качетсве подарка, "
+                       "и я не могу его удалить")
 
 item_status = {
     'free': '🟢',
@@ -135,6 +141,7 @@ items_list = f"<b>Чтобы показать список подарков, н�
 go_back = "🔙 Назад"
 i_will_gift_this_item = "Я подарю это!"
 someone_else_gift_it = "Этот подарок дарит кто-то другой"
+item_already_deleted = "Этот подарок уже удалён"
 item_gifted = "Успешно!"
 item_limit = "К сожалению, пока что вы не можете отметить больше трёх подарков в одном вишлисте 😟"
 
@@ -152,7 +159,7 @@ def wishlist_detailed_information(wishlist: Wishlist, wishlist_owner: User):
         text += f" @{wishlist_owner.username}"
     text += f"\n\n<b>Чтобы показать список подарков, нажмите на кнопку ниже</b>" \
             "\nЕсли рядом с подарком стоит галочка (✅), значит эту вещь уже подарит кто-то другой"
-    text += f"\n\nСсылка на вишлист:\nhttps://t.me/wishlyRobot?start=wl_{wishlist.hashcode}" \
+    text += f"\n\nСсылка на вишлист:\nt.me/{config.BOT_USERNAME}?start=wl_{wishlist.hashcode}" \
             f"\n(Отправьте эту ссылку друзьям или выложите в соцсети, чтобы все могли посмотреть этот вишлист)"
     return text
 
@@ -272,7 +279,7 @@ def wishlist_owner_party_soon(
     #     for i, item in enumerate(non_gifted_items):
     #         text += f'\n{i}. {item.title}'
 
-    text += f"\n\n🍀 Ссылка на ваш вишлист: t.me/wishlyRobot?start=wl_{wishlist.hashcode}"
+    text += f"\n\n🍀 Ссылка на ваш вишлист: t.me/{config.BOT_USERNAME}?start=wl_{wishlist.hashcode}"
     text += "\n\nЕсли у вас есть вопросы по работе сервиса Wishly, вы можете написать разработчику: @smplgdev. " \
             "Бот только развивается, и я буду рад выслушать пожелания и предложения по развитию сервиса 🧚‍♀️"
     return text

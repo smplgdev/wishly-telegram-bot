@@ -1,8 +1,9 @@
 from aiogram import Router, F, types
 
-from filters.existing_wishlist_query_filter import IsWishlistExists
-from filters.is_logged_user import IsLoggedUserFilter
-import strings
+
+from bot import strings
+from bot.filters.is_logged_user_filter import IsLoggedUserFilter
+from bot.filters.is_wishlist_exists import IsWishlistExists
 
 router = Router()
 

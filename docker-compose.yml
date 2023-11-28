@@ -1,25 +1,49 @@
-version: "3.1"
+version: "3.8"
 
 services:
+  redis:
+    image: 'redis:latest'
+    container_name: redis-wishly
+    ports:
+      - "6379:6379"
+    networks:
+      - botnet
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+
+  postgres:
+    image: postgres
+    container_name: postgres-wishly
+    env_file:
+      - "./.env"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - .:/code
+    networks:
+      - botnet
+
   bot:
     container_name: wishly
     build:
       context: .
-    command: python __main__.py
-    restart: always
-    networks:
-      - batya_botnet
+      dockerfile: Dockerfile
     env_file:
-      - ".env"
+      - "./.env"
+    restart: always
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - botnet
     volumes:
-      - .:/src
-
-  redis:
-    container_name: redis_wishly
-    image: 'bitnami/redis:latest'
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
+      - .:/code
 
 networks:
-  batya_botnet:
+  botnet:
+    driver: bridge
     external: true

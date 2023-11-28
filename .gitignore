@@ -1,10 +1,12 @@
-update_word_list.py
 .env
 venv/
-data/userdata/*
+.DS
+.DS_Store
 ./tests
 .idea/
 __pycache__/
+
+*.log
 
 # C extensions
 *.so

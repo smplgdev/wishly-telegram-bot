@@ -18,3 +18,5 @@ gift_icon_links = [
     "https://telegra.ph/file/a27c8728922871d09f0b0.png",
     "https://telegra.ph/file/bd42e540fb8318a2ccbf1.png",
 ]
+
+EMPTY_PICTURE = "https://telegra.ph/file/3fe119b1b863de24718bb.png"

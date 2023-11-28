@@ -3,11 +3,11 @@ from datetime import date
 
 from sqlalchemy import and_
 
-from database.models.Item import Item
-from database.models.RelatedWishlists import RelatedWishlist
-from database.models.User import User
-from database.models.Wishlist import Wishlist
-from src.utils.random_code_generator import generate_random_code
+from bot.db.models import Item
+from bot.db.models import RelatedWishlist
+from bot.db.models import User
+from bot.db.models import Wishlist
+from bot.utils.random_code_generator import generate_random_code
 
 
 class UserCommand:
