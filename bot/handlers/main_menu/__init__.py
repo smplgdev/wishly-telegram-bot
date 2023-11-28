@@ -19,3 +19,4 @@ main_menu_router.inline_query.middleware(update_user_data.UpdateUserDataMiddlewa
 
 router = Router()
 router.include_router(create_wishlist.router)
+router.include_router(gift_ideas.router)

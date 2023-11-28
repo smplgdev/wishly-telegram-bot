@@ -3,8 +3,11 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from bot.db.models import Item
 from bot.db.models import Wishlist
+from bot.db.models.gift_ideas import GiftIdea
+from bot.db.models.gift_ideas_categories import GiftIdeaCategory
 from bot.keyboards.callback_factories import WishlistActionsCallback, ItemActionsCallback, \
-    MainMenuCallback, AddItemSkipStageCallback, GiftItemCallback, DeleteItemCallback
+    MainMenuCallback, AddItemSkipStageCallback, GiftItemCallback, DeleteItemCallback, GiftCategoryCallback, \
+    GiftIdeaCallback, AddGiftIdeaToWishlistCallback
 from bot import strings
 
 
@@ -271,4 +274,77 @@ def delete_wishlist_keyboard(wishlist_id: int):
         )
     )
     builder.adjust(2)
+    return builder.as_markup()
+
+
+def get_categories_keyboard(gift_categories):
+    builder = InlineKeyboardBuilder()
+
+    for category in gift_categories:
+        builder.button(
+            text=category.name,
+            callback_data=GiftCategoryCallback(
+                category_id=category.id
+            )
+        )
+
+    builder.adjust(2)
+    return builder.as_markup()
+
+
+def get_list_gift_ideas_keyboard(gift_ideas: list[GiftIdea]):
+    builder = InlineKeyboardBuilder()
+
+    for gift in gift_ideas:
+        builder.button(
+            text=gift.title,
+            callback_data=GiftIdeaCallback(
+                gift_idea_id=gift.id,
+                action="show"
+            )
+        )
+
+    builder.adjust(1)
+    return builder.as_markup()
+
+
+def get_gift_idea_keyboard(gift_idea: GiftIdea):
+    builder = InlineKeyboardBuilder()
+    builder.button(
+        text=strings.add_to_my_wishlist,
+        callback_data=GiftIdeaCallback(
+            gift_idea_id=gift_idea.id,
+            action="choose_wishlist_to_add"
+        )
+    )
+    builder.button(
+        text=strings.go_back,
+        callback_data=GiftCategoryCallback(
+            category_id=gift_idea.gift_idea_category_id
+        )
+    )
+    builder.adjust(1)
+    return builder.as_markup()
+
+
+def choose_wishlist_to_add_gift_idea_keyboard(gift_idea_id: int, wishlists=None):
+    builder = InlineKeyboardBuilder()
+
+    for wishlist in wishlists:
+        builder.button(
+            text=wishlist.title,
+            callback_data=AddGiftIdeaToWishlistCallback(
+                gift_idea_id=gift_idea_id,
+                wishlist_id=wishlist.id
+            )
+        )
+    if not wishlists:
+        builder.button(
+            text=strings.create_wishlist_inline_button,
+            callback_data=WishlistActionsCallback(
+                wishlist_id=0,
+                action="create_wishlist"
+            )
+        )
+    builder.adjust(1)
     return builder.as_markup()

@@ -34,3 +34,17 @@ class MainMenuCallback(CallbackData, prefix='main_menu'):
 
 class DeleteItemCallback(CallbackData, prefix="delete_item"):
     item_id: int
+
+
+class GiftCategoryCallback(CallbackData, prefix="gift_category"):
+    category_id: int
+
+
+class GiftIdeaCallback(CallbackData, prefix="gift_idea"):
+    gift_idea_id: int
+    action: str
+
+
+class AddGiftIdeaToWishlistCallback(CallbackData, prefix="add_gift_idea"):
+    gift_idea_id: int
+    wishlist_id: int
