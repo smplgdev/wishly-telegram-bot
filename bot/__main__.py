@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from bot.config_reader import config, DB_URI
 from bot.handlers import add_item, main_menu, show_wishlist, edit_wishlist, gift_item, delete_item_from_wishlist
-from bot.handlers.inline import show_wishlist_inline, non_logged_users_inline
+from bot.handlers.inline import show_wishlist_inline, non_logged_users_inline, show_gift_ideas
 from bot.middlewares.db import DbSessionMiddleware
 from bot.utils.scheduled_jobs import set_scheduled_jobs
 from bot.utils.ui_commands import set_ui_commands
@@ -52,6 +52,8 @@ async def main():
     dp.include_router(gift_item.router)
     dp.include_router(delete_item_from_wishlist.router)
 
+    # Inline handlers
+    dp.include_router(show_gift_ideas.router)
     dp.include_router(show_wishlist_inline.router)
     dp.include_router(non_logged_users_inline.router)
     # dp.include_router(error_handler.error_router)

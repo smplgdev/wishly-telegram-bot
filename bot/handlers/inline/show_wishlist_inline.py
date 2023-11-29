@@ -66,7 +66,6 @@ async def show_wishlist_inline_handler(query: types.InlineQuery, session: AsyncS
         switch_pm_text=f"Вишлист «{wishlist.title}». Автор: {creator.name}",
         switch_pm_parameter=f"wl_{wishlist.hashcode}",
         cache_time=10,
-        # is_personal=True
     )
 
 

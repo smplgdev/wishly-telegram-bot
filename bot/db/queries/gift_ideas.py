@@ -32,13 +32,12 @@ async def get_all_gift_ideas_categories(session: AsyncSession):
     return (await session.execute(stmt)).scalars()
 
 
-async def get_all_gifts_from_category(session: AsyncSession, category_id: int):
+async def get_gift_idea_category(session: AsyncSession, category_id: int):
     stmt = (
-        select(GiftIdea).
-        where(GiftIdea.gift_idea_category_id == category_id)
+        select(GiftIdeaCategory).
+        where(GiftIdeaCategory.id == category_id)
     )
-
-    return (await session.execute(stmt)).scalars()
+    return (await session.execute(stmt)).scalar()
 
 
 async def add_gift_idea_to_wishlist(session: AsyncSession,

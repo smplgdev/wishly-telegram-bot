@@ -41,7 +41,7 @@ async def show_wishlist(
         is_owner = True
     else:
         is_owner = False
-
+    
     markup = wishlist_items_keyboard(
         wishlist_id=wishlist.id,
         wishlist_hashcode=wishlist.hashcode,

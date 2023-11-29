@@ -1,13 +1,12 @@
-from aiogram import Router, types, F
+from aiogram import Router, types, F, Bot
 from aiogram.fsm.context import FSMContext
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot import strings
-from bot.db.queries.gift_ideas import get_all_gift_ideas_categories, get_category_by_id, \
-    get_gift_idea_by_id, add_gift_idea_to_wishlist
+from bot.db.queries.gift_ideas import get_all_gift_ideas_categories, get_gift_idea_by_id, add_gift_idea_to_wishlist
 from bot.db.queries.users import get_user_or_none_by_telegram_id
-from bot.keyboards.callback_factories import GiftCategoryCallback, GiftIdeaCallback, AddGiftIdeaToWishlistCallback
-from bot.keyboards.inline import get_categories_keyboard, get_list_gift_ideas_keyboard, get_gift_idea_keyboard, \
+from bot.keyboards.callback_factories import GiftIdeaCallback, AddGiftIdeaToWishlistCallback
+from bot.keyboards.inline import get_categories_keyboard, get_gift_idea_keyboard, \
     choose_wishlist_to_add_gift_idea_keyboard
 
 main_menu_router = Router()
@@ -29,55 +28,55 @@ async def gift_ideas_select_category_handler(
     )
 
 
-@router.callback_query(GiftCategoryCallback.filter())
-async def gift_ideas_handler(
-        call: types.CallbackQuery,
-        callback_data: GiftCategoryCallback,
-        session: AsyncSession,
-):
-    await call.answer(cache_time=3)
-    category_id = callback_data.category_id
-    category = await get_category_by_id(session, category_id)
-    await call.message.answer(
-        strings.gift_ideas_for_this_category(category.name),
-        reply_markup=get_list_gift_ideas_keyboard(category.gift_ideas)
-    )
+# @router.callback_query(GiftCategoryCallback.filter())
+# async def gift_ideas_handler(
+#         call: types.CallbackQuery,
+#         callback_data: GiftCategoryCallback,
+#         session: AsyncSession,
+# ):
+#     await call.answer(cache_time=3)
+#     category_id = callback_data.category_id
+#     category = await get_category_by_id(session, category_id)
+#     await call.message.answer(
+#         strings.gift_ideas_for_this_category(category.name),
+#         reply_markup=get_list_gift_ideas_keyboard(category.gift_ideas)
+#     )
 
 
-@router.callback_query(GiftIdeaCallback.filter(F.action == "show"))
-async def show_gift_idea_handler(
-        call: types.CallbackQuery,
-        callback_data: GiftIdeaCallback,
-        session: AsyncSession
-):
-    await call.answer(cache_time=3)
-    gift_idea_id = callback_data.gift_idea_id
-    gift_idea = await get_gift_idea_by_id(session, gift_idea_id)
-    if gift_idea.description:
-        text = f"<b>{gift_idea.title}</b>\n\n{gift_idea.description}"
-    else:
-        text = f"<b>{gift_idea.title}</b>"
-    reply_markup = get_gift_idea_keyboard(gift_idea)
-    if gift_idea.photo_file_id:
-        await call.message.answer_photo(
-            gift_idea.photo_file_id,
-            caption=text,
-            reply_markup=reply_markup
-        )
-    else:
-        await call.message.answer(
-            text,
-            reply_markup=reply_markup
-        )
+# @router.callback_query(GiftIdeaCallback.filter(F.action == "show"))
+# async def show_gift_idea_handler(
+#         call: types.CallbackQuery,
+#         callback_data: GiftIdeaCallback,
+#         session: AsyncSession
+# ):
+#     await call.answer(cache_time=3)
+#     gift_idea_id = callback_data.gift_idea_id
+#     gift_idea = await get_gift_idea_by_id(session, gift_idea_id)
+#     if gift_idea.description:
+#         text = f"<b>{gift_idea.title}</b>\n\n{gift_idea.description}"
+#     else:
+#         text = f"<b>{gift_idea.title}</b>"
+#     reply_markup = get_gift_idea_keyboard(gift_idea)
+#     if gift_idea.photo_file_id:
+#         await call.message.answer_photo(
+#             gift_idea.photo_file_id,
+#             caption=text,
+#             reply_markup=reply_markup
+#         )
+#     else:
+#         await call.message.answer(
+#             text,
+#             reply_markup=reply_markup
+#         )
 
 
 @router.callback_query(GiftIdeaCallback.filter(F.action == "choose_wishlist_to_add"))
 async def choose_wishlist_to_add_gift_idea_handler(
         call: types.CallbackQuery,
         callback_data: GiftIdeaCallback,
-        session: AsyncSession
+        session: AsyncSession,
+        bot: Bot,
 ):
-    await call.answer()
     gift_idea_id = callback_data.gift_idea_id
     user = await get_user_or_none_by_telegram_id(session, call.from_user.id)
     user_wishlists = list(filter(lambda wishlist: wishlist.creator_id == user.id, user.wishlists))
@@ -86,7 +85,8 @@ async def choose_wishlist_to_add_gift_idea_handler(
     else:
         text = strings.choose_wishlist_to_add_gift_idea
     markup = choose_wishlist_to_add_gift_idea_keyboard(gift_idea_id=gift_idea_id, wishlists=user_wishlists)
-    await call.message.answer(
+    await bot.send_message(
+        call.from_user.id,
         text,
         reply_markup=markup
     )

@@ -60,7 +60,9 @@ go_to_bot = "Перейти в меню бота"
 past_date_error = "Эта дата уже в прошлом. Введите дату, которая находится в будущем" \
             f"\n\nНапример: <i>24.11.2027</i>"
 hide_wishlist_items = "Скрыть список подарков"
+hide_gift_ideas = "Скрыть список идей для подарков"
 wishlist_list_was_closed = "Список подарков был скрыт"
+return_to_list_ideas = "Показать список «%s»"
 no_items_in_wishlist = "Здесь пока нет ни одного подарка!"
 date_value_error = "Вы ввели дату в неправильном формате. " + enter_expire_date
 title_successfully_changed = "Название вишлиста успешно изменено!"

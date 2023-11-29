@@ -279,22 +279,24 @@ def delete_wishlist_keyboard(wishlist_id: int):
 
 def get_categories_keyboard(gift_categories):
     builder = InlineKeyboardBuilder()
-
     for category in gift_categories:
         builder.button(
             text=category.name,
-            callback_data=GiftCategoryCallback(
-                category_id=category.id
-            )
+            switch_inline_query_current_chat=f"ideas_{category.id}"
         )
+        # builder.button(
+        #     text=category.name,
+        #     callback_data=GiftCategoryCallback(
+        #         category_id=category.id
+        #     )
+        # )
 
-    builder.adjust(2)
+    builder.adjust(1)
     return builder.as_markup()
 
 
 def get_list_gift_ideas_keyboard(gift_ideas: list[GiftIdea]):
     builder = InlineKeyboardBuilder()
-
     for gift in gift_ideas:
         builder.button(
             text=gift.title,
@@ -308,7 +310,7 @@ def get_list_gift_ideas_keyboard(gift_ideas: list[GiftIdea]):
     return builder.as_markup()
 
 
-def get_gift_idea_keyboard(gift_idea: GiftIdea):
+def get_gift_idea_keyboard(gift_idea: GiftIdea, gift_idea_category: GiftIdeaCategory):
     builder = InlineKeyboardBuilder()
     builder.button(
         text=strings.add_to_my_wishlist,
@@ -318,10 +320,8 @@ def get_gift_idea_keyboard(gift_idea: GiftIdea):
         )
     )
     builder.button(
-        text=strings.go_back,
-        callback_data=GiftCategoryCallback(
-            category_id=gift_idea.gift_idea_category_id
-        )
+        text=strings.return_to_list_ideas % gift_idea_category.name,
+        switch_inline_query_current_chat=f"ideas_{gift_idea_category.id}"
     )
     builder.adjust(1)
     return builder.as_markup()
