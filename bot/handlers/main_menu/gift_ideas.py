@@ -44,7 +44,7 @@ async def gift_ideas_handler(
     )
 
 
-@router.callback_query(GiftIdeaCallback.filter())
+@router.callback_query(GiftIdeaCallback.filter(F.action == "show"))
 async def show_gift_idea_handler(
         call: types.CallbackQuery,
         callback_data: GiftIdeaCallback,
