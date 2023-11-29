@@ -68,6 +68,8 @@ date_value_error = "Вы ввели дату в неправильном фор�
 title_successfully_changed = "Название вишлиста успешно изменено!"
 date_successfully_changed = "Дата события успешно изменена!"
 
+add_wishlist_to_gift_ideas = "Добавить вишлист в идеи для подарков"
+wishlist_successfully_added_as_gift_ideas = "Вишлист успешно стал списком идей для подарков"
 
 def your_wishlist_is_still_empty(wishlist: Wishlist) -> str:
     text = f"Ваш вишлист «{wishlist.title}» до сих пор пуст! Вы не добавили ни одного подарка 😕" \

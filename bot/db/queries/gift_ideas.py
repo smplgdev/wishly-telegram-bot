@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bot.db.models import Item
+from bot.db.models import Item, Wishlist
 from bot.db.models.gift_ideas import GiftIdea
 from bot.db.models.gift_ideas_categories import GiftIdeaCategory
 
@@ -56,3 +56,27 @@ async def add_gift_idea_to_wishlist(session: AsyncSession,
     item = await session.merge(item)
     await session.commit()
     return item
+
+
+async def make_gift_idea_wishlist_from_wishlist(
+        session: AsyncSession,
+        wishlist: Wishlist
+):
+    wishlist_items: list[Item] = wishlist.items
+    gift_idea = GiftIdeaCategory(
+        name=wishlist.title,
+    )
+
+    gift_idea = await session.merge(gift_idea)
+    for item in wishlist_items:
+        gift = GiftIdea(
+            gift_idea_category_id=gift_idea.id,
+            title=item.title,
+            description=item.description,
+            photo_link=item.photo_link,
+            price=item.price,
+            photo_file_id=item.photo_file_id,
+            thumb_link=item.thumb_link
+        )
+        await session.merge(gift)
+    await session.commit()

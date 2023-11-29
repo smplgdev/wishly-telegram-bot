@@ -41,11 +41,17 @@ async def show_wishlist(
         is_owner = True
     else:
         is_owner = False
-    
+
+    if is_owner and owner.is_admin:
+        is_admin = True
+    else:
+        is_admin = False
+
     markup = wishlist_items_keyboard(
         wishlist_id=wishlist.id,
         wishlist_hashcode=wishlist.hashcode,
-        is_owner=is_owner
+        is_owner=is_owner,
+        is_admin=is_admin
     )
 
     text = strings.wishlist_detailed_information(wishlist, owner)

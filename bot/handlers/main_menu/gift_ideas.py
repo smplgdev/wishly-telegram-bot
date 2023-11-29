@@ -79,7 +79,12 @@ async def choose_wishlist_to_add_gift_idea_handler(
 ):
     gift_idea_id = callback_data.gift_idea_id
     user = await get_user_or_none_by_telegram_id(session, call.from_user.id)
-    user_wishlists = list(filter(lambda wishlist: wishlist.creator_id == user.id, user.wishlists))
+    user_wishlists = list(
+        filter(
+            lambda wishlist: wishlist.creator_id == user.id and wishlist.is_active is True,
+            user.wishlists
+        )
+    )
     if len(user_wishlists) == 0:
         text = strings.firstly_create_wishlist
     else:
@@ -103,6 +108,6 @@ async def add_gift_to_wishlist_handler(
     wishlist_id = callback_data.wishlist_id
     gift_idea = await get_gift_idea_by_id(session, gift_idea_id)
     await add_gift_idea_to_wishlist(session, gift_idea, wishlist_id)
-    await call.message.answer(
+    await call.message.edit_text(
         strings.gift_idea_successfully_added_to_wishlist
     )

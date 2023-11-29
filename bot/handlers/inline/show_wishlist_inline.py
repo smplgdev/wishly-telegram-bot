@@ -106,11 +106,9 @@ async def show_wishlist_inline_handler(query: types.InlineQuery, session: AsyncS
 async def other_inline_queries_handler(query: types.InlineQuery, session: AsyncSession):
     user_telegram_id = query.from_user.id
     user = await get_user_or_none_by_telegram_id(session, user_telegram_id)
-    wishlists: list[Wishlist] = user.wishlists
+    wishlists: list[Wishlist] = list(filter(lambda _wishlist: _wishlist.is_active, user.wishlists))
     results = []
     for wishlist in wishlists:
-        if not wishlist.is_active:
-            continue
         user: User = await get_user_or_none_by_id(session, wishlist.creator_id)
         results.append(
             InlineQueryResultArticle(

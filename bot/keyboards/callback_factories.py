@@ -48,3 +48,7 @@ class GiftIdeaCallback(CallbackData, prefix="gift_idea"):
 class AddGiftIdeaToWishlistCallback(CallbackData, prefix="add_gift_idea"):
     gift_idea_id: int
     wishlist_id: int
+
+
+class WishlistToGiftIdeaCallback(CallbackData, prefix="admin"):
+    wishlist_id: int
