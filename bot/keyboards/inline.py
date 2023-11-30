@@ -32,6 +32,10 @@ def add_items_keyboard(wishlist_id: int) -> InlineKeyboardMarkup:
             action="new_item",
         )
     )
+    builder.button(
+        text=strings.gift_ideas_button_text,
+        callback_data=GoToGiftIdeasCallback()
+    )
     return builder.as_markup()
 
 
@@ -74,6 +78,10 @@ def go_to_menu_or_add_another_item(wishlist_id: int):
             wishlist_id=wishlist_id,
             action="new_item",
         )
+    )
+    builder.button(
+        text=strings.gift_ideas_button_text,
+        callback_data=GoToGiftIdeasCallback()
     )
     builder.button(
         text=strings.go_to_wishlist,
