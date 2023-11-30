@@ -69,4 +69,3 @@ async def update_wishlist(session: AsyncSession, wishlist: Wishlist, **kwargs) \
         setattr(wishlist, key, value)
     await session.commit()
     return wishlist
-

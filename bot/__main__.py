@@ -4,6 +4,7 @@ import logging
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.utils.callback_answer import CallbackAnswerMiddleware
+from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
@@ -28,7 +29,11 @@ async def main():
     engine = create_async_engine(url=DB_URI)
     sessionmaker = async_sessionmaker(engine, expire_on_commit=False)
 
-    scheduler = AsyncIOScheduler()
+    jobstores = {
+        'default': RedisJobStore(jobs_key='dispatched_trips_jobs', run_times_key='dispatched_trips_running',
+                                 host=config.REDIS_HOST, port=config.REDIS_PORT)
+    }
+    scheduler = AsyncIOScheduler(jobstores=jobstores)
     set_scheduled_jobs(scheduler, bot)
 
     redis = Redis(

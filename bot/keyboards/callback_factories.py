@@ -8,6 +8,10 @@ class WishlistActionsCallback(CallbackData, prefix="wishlist"):
     action: str
 
 
+class GoToGiftIdeasCallback(CallbackData, prefix="gift_idea_section"):
+    pass
+
+
 class ItemActionsCallback(CallbackData, prefix="addItemActions"):
     wishlist_id: int
     action: str

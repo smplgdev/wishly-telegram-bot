@@ -1,5 +1,6 @@
 from aiogram import Bot
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
 
 
 def set_scheduled_jobs(
@@ -9,7 +10,6 @@ def set_scheduled_jobs(
         **kwargs,
 ):
     return
-    scheduler.add_job(send_message_to_admin, CronTrigger(hour=6, minute=57), args=(bot,))
     scheduler.add_job(week_before_party, CronTrigger(hour=7, minute=2), args=(bot,))
     scheduler.add_job(send_messages_to_wishlists_owner, CronTrigger(hour=14, minute=30), args=(bot,))
     scheduler.add_job(send_message_to_owners_of_empty_wishlists, CronTrigger(hour=13, minute=0), args=(bot,))
@@ -18,7 +18,7 @@ def set_scheduled_jobs(
 async def send_message_to_owners_of_empty_wishlists(
         bot: Bot
 ):
-    empty_wishlists = await WishlistCommand.get_empty_wishlists_in_days(1)
+    empty_wishlists = await get_empty_wishlists_since_create(1)
     for wishlist in empty_wishlists:
         try:
             await bot.send_message(
@@ -101,14 +101,3 @@ async def send_messages_to_wishlists_owner(bot: Bot):
         except Exception as e:
             print(e)
             await UserCommand.make_inactive(user_tg_id=owner.tg_id)
-
-
-async def send_message_to_admin(bot: Bot):
-    # Добавить галочку is_admin в табл users
-    admins = config.ADMINS
-    for admin in admins:
-        await bot.send_message(
-            chat_id=admin,
-            text="Sending messages will start in 5 minutes",
-        )
-

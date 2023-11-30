@@ -7,7 +7,7 @@ from bot.db.models.gift_ideas import GiftIdea
 from bot.db.models.gift_ideas_categories import GiftIdeaCategory
 from bot.keyboards.callback_factories import WishlistActionsCallback, ItemActionsCallback, \
     MainMenuCallback, AddItemSkipStageCallback, GiftItemCallback, DeleteItemCallback, GiftCategoryCallback, \
-    GiftIdeaCallback, AddGiftIdeaToWishlistCallback, WishlistToGiftIdeaCallback
+    GiftIdeaCallback, AddGiftIdeaToWishlistCallback, WishlistToGiftIdeaCallback, GoToGiftIdeasCallback
 from bot import strings
 
 
@@ -99,6 +99,10 @@ def add_items(wishlist_id: int) -> InlineKeyboardMarkup:
             action="add"
         )
     )
+    builder.button(
+        text=strings.gift_ideas_button_text,
+        callback_data=GoToGiftIdeasCallback()
+    )
     return builder.as_markup()
 
 
@@ -182,6 +186,10 @@ def wishlist_items_keyboard(
                 wishlist_id=wishlist_id,
                 action="new_item",
             )
+        )
+        builder.button(
+            text=strings.gift_ideas_button_text,
+            callback_data=GoToGiftIdeasCallback()
         )
         builder.button(
             text=strings.edit_wishlist_button_text,

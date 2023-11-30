@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from bot import strings
 from bot.db.queries.gift_ideas import get_all_gift_ideas_categories, get_gift_idea_by_id, add_gift_idea_to_wishlist
 from bot.db.queries.users import get_user_or_none_by_telegram_id
-from bot.keyboards.callback_factories import GiftIdeaCallback, AddGiftIdeaToWishlistCallback
+from bot.keyboards.callback_factories import GiftIdeaCallback, AddGiftIdeaToWishlistCallback, GoToGiftIdeasCallback
 from bot.keyboards.inline import get_categories_keyboard, get_gift_idea_keyboard, \
     choose_wishlist_to_add_gift_idea_keyboard
 
@@ -14,18 +14,25 @@ router = Router()
 
 
 @main_menu_router.message(F.text == strings.gift_ideas)
+@main_menu_router.callback_query(GoToGiftIdeasCallback.filter())
 async def gift_ideas_select_category_handler(
-        message: types.Message,
+        update: types.Message | types.CallbackQuery,
         state: FSMContext,
         session: AsyncSession
 ):
     await state.clear()
 
     gift_ideas_categories = await get_all_gift_ideas_categories(session)
-    await message.answer(
-        strings.gift_ideas_categories,
-        reply_markup=get_categories_keyboard(gift_ideas_categories)
-    )
+    if isinstance(update, types.Message):
+        await update.answer(
+            strings.gift_ideas_categories,
+            reply_markup=get_categories_keyboard(gift_ideas_categories)
+        )
+    elif isinstance(update, types.CallbackQuery):
+        await update.message.answer(
+            strings.gift_ideas_categories,
+            reply_markup=get_categories_keyboard(gift_ideas_categories)
+        )
 
 
 # @router.callback_query(GiftCategoryCallback.filter())
