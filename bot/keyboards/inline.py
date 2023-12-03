@@ -165,6 +165,7 @@ def wishlist_items_keyboard(
         wishlist_hashcode: str,
         is_owner: bool = False,
         is_admin: bool = False,
+        user_has_gifts: bool = False,
 ) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
 
@@ -192,7 +193,7 @@ def wishlist_items_keyboard(
                 action="edit"
             )
         )
-    else:
+    if user_has_gifts:
         builder.button(
             text=strings.my_gifts,
             callback_data=UserGiftsCallback(

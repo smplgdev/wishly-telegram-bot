@@ -29,7 +29,8 @@ async def show_users_gifts(
             wishlist_id=wishlist_id,
             wishlist_hashcode=wishlist.hashcode,
             is_owner=False,
-            is_admin=False
+            is_admin=False,
+            user_has_gifts=False,
         )
     else:
         markup = list_user_items(users_gifts)
@@ -51,4 +52,4 @@ async def delete_item_from_gifts(
     item = await get_item_by_id(session, item_id)
     await update_item(session, item, customer_id=None)
 
-    await call.answer(strings.gift_successfully_deleted(item.title))
+    await call.answer(strings.gift_successfully_deleted(item.title), show_alert=True)

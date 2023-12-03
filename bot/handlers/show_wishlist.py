@@ -47,11 +47,17 @@ async def show_wishlist(
     else:
         is_admin = False
 
+    if user_telegram_id in [item.customer_id for item in wishlist.items]:
+        user_has_gifts = True
+    else:
+        user_has_gifts = False
+
     markup = wishlist_items_keyboard(
         wishlist_id=wishlist.id,
         wishlist_hashcode=wishlist.hashcode,
         is_owner=is_owner,
-        is_admin=is_admin
+        is_admin=is_admin,
+        user_has_gifts=user_has_gifts,
     )
 
     text = strings.wishlist_detailed_information(wishlist, owner)

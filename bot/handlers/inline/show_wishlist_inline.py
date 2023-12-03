@@ -125,7 +125,8 @@ async def other_inline_queries_handler(query: types.InlineQuery, session: AsyncS
                 reply_markup=wishlist_items_keyboard(
                     wishlist_id=wishlist.id,
                     wishlist_hashcode=wishlist.hashcode,
-                    is_owner=False
+                    is_owner=False,
+                    user_has_gifts=False
                 )
             )
         )

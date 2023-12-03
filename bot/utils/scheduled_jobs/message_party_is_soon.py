@@ -28,6 +28,10 @@ async def party_is_soon_message(days: int = 3):
 
             for customer in customers:
                 customer_items = list(filter(lambda item_: item_.customer_id == customer.id, wishlist.items))
+                if len(customer_items) == 0:
+                    user_has_gifts = False
+                else:
+                    user_has_gifts = True
                 text = strings.party_soon(
                     wishlist=wishlist,
                     owner=owner,
@@ -37,7 +41,8 @@ async def party_is_soon_message(days: int = 3):
                     wishlist_id=wishlist.id,
                     wishlist_hashcode=wishlist.hashcode,
                     is_owner=False,
-                    is_admin=False
+                    is_admin=False,
+                    user_has_gifts=user_has_gifts
                 )
                 try:
                     await bot.send_message(
