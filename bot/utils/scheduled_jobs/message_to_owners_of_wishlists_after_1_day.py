@@ -6,6 +6,7 @@ from bot.db.queries.users import get_user_or_none_by_id, update_user
 from bot.db.queries.wishlists import get_wishlist_by_id, get_wishlist_related_users
 from bot.keyboards.inline import wishlist_items_keyboard
 from bot.utils.get_async_session import get_async_session
+from bot.utils.send_message import send_message
 
 
 async def send_message_to_owner_of_wishlist(
@@ -31,15 +32,15 @@ async def send_message_to_owner_of_wishlist(
                 non_gifted_items=non_gifted_items,
             )
 
-        try:
-            await bot.send_message(
-                owner.telegram_id,
-                text,
-                reply_markup=wishlist_items_keyboard(
-                    wishlist_id=wishlist.id,
-                    wishlist_hashcode=wishlist.hashcode,
-                    is_owner=True,
-                )
+        is_sent = await send_message(
+            bot=bot,
+            user_id=owner.telegram_id,
+            text=text,
+            reply_markup=wishlist_items_keyboard(
+                wishlist_id=wishlist.id,
+                wishlist_hashcode=wishlist.hashcode,
+                is_owner=True,
             )
-        except TelegramNotFound:
+        )
+        if not is_sent:
             await update_user(session, user=owner, is_active=False)
