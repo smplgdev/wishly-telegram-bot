@@ -46,8 +46,8 @@ async def show_wishlist(
         is_admin = True
     else:
         is_admin = False
-
-    if user_telegram_id in [item.customer_id for item in wishlist.items]:
+    user = await get_user_or_none_by_telegram_id(session, user_telegram_id)
+    if user.id in [item.customer_id for item in wishlist.items]:
         user_has_gifts = True
     else:
         user_has_gifts = False
