@@ -56,7 +56,7 @@ async def cmd_start(
         await add_wishlist_to_favourite(session, user, wishlist)
         scheduler.add_job(
             send_message_to_deeplinked_user,
-            DateTrigger(run_date=datetime.datetime.now() + datetime.timedelta(seconds=10)),
+            DateTrigger(run_date=datetime.datetime.now() + datetime.timedelta(hours=4)),
             args=(message.from_user.id, wishlist.id),
             misfire_grace_time=60*60
         )

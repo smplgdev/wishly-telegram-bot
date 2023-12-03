@@ -11,12 +11,13 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from bot.bot_instance import bot
 from bot.config_reader import config, DB_URI
-from bot.handlers import add_item, main_menu, show_wishlist, edit_wishlist, gift_item, delete_item_from_wishlist
+from bot.handlers import add_item, main_menu, show_wishlist, edit_wishlist, gift_item, delete_item_from_wishlist, \
+    my_gifts
 from bot.handlers.admin import add_wishlist_to_gift_idea
 from bot.handlers.inline import show_wishlist_inline, non_logged_users_inline, show_gift_ideas
 from bot.middlewares.db import DbSessionMiddleware
 from bot.middlewares.get_scheduler import SchedulerMiddleware
-from bot.utils.scheduled_jobs.set_scheduled_jobs import set_scheduled_jobs
+from bot.utils.scheduled_jobs.set_scheduled_jobs import set_scheduled_jobs, clean_scheduled_jobs
 from bot.utils.ui_commands import set_ui_commands
 
 logging.basicConfig(level=logging.INFO)
@@ -31,7 +32,7 @@ async def main():
                                  host=config.REDIS_HOST, port=config.REDIS_PORT)
     }
     scheduler = AsyncIOScheduler(jobstores=jobstores, timezone='Europe/Berlin')
-    set_scheduled_jobs(scheduler)
+    # set_scheduled_jobs(scheduler)
 
     redis = Redis(
         host=config.REDIS_HOST,
@@ -55,6 +56,7 @@ async def main():
     dp.include_router(edit_wishlist.router)
     dp.include_router(gift_item.router)
     dp.include_router(delete_item_from_wishlist.router)
+    dp.include_router(my_gifts.router)
 
     # Admin handlers
     dp.include_router(add_wishlist_to_gift_idea.router)

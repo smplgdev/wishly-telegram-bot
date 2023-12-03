@@ -12,6 +12,15 @@ class GoToGiftIdeasCallback(CallbackData, prefix="gift_idea_section"):
     pass
 
 
+class UserGiftsCallback(CallbackData, prefix="user_gifts"):
+    wishlist_id: int
+    action: str
+
+
+class DeleteGiftCallback(CallbackData, prefix="delete_gift"):
+    item_id: int
+
+
 class ItemActionsCallback(CallbackData, prefix="addItemActions"):
     wishlist_id: int
     action: str

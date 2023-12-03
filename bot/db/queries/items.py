@@ -43,3 +43,11 @@ async def count_items_in_wishlist(session: AsyncSession, wishlist_id: int):
 async def delete_item(session: AsyncSession, item: Item):
     await session.delete(item)
     await session.commit()
+
+
+async def update_item(session: AsyncSession, item: Item, **kwargs):
+    if not item:
+        return False
+    for key, value in kwargs.items():
+        setattr(item, key, value)
+    await session.commit()
