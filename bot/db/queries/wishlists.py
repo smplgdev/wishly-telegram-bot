@@ -1,10 +1,11 @@
+import datetime
 from datetime import date
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.operators import and_
 
-from bot.db.models import Wishlist, User
+from bot.db.models import Wishlist, User, wishlist_user_association
 from bot.utils.random_code_generator import generate_random_code
 
 
@@ -69,3 +70,60 @@ async def update_wishlist(session: AsyncSession, wishlist: Wishlist, **kwargs) \
         setattr(wishlist, key, value)
     await session.commit()
     return wishlist
+
+
+async def make_wishlist_inactive(session: AsyncSession, wishlist: Wishlist):
+    if not wishlist.is_active:
+        return
+    setattr(wishlist, "is_active", False)
+    await session.commit()
+
+
+async def get_empty_wishlists_during_period(session: AsyncSession, days: int = 1):
+    stmt = (
+        select(Wishlist).
+        where(Wishlist.is_active.is_(True)).
+        where(Wishlist.created_at + datetime.timedelta(days=days) >= datetime.date.today())
+    )
+
+    wishlists = (await session.execute(stmt)).scalars()
+    empty_wishlists = list()
+    for wishlist in wishlists:
+        if len(wishlist.items) == 0:
+            empty_wishlists.append(wishlist)
+    return empty_wishlists
+
+
+async def get_all_parties_wishlists_in_days(session: AsyncSession, days: int = 5):
+    today = datetime.date.today()
+    stmt = (
+        select(Wishlist).
+        where(Wishlist.is_active.is_(True)).
+        where(today + datetime.timedelta(days=days) == Wishlist.expiration_date)
+    )
+    return (await session.execute(stmt)).scalars()
+
+
+async def get_expired_wishlists(session: AsyncSession, date_: datetime.date = datetime.date.today()):
+    stmt = (
+        select(Wishlist).
+        where(Wishlist.expiration_date <= date_)
+    )
+
+    return (await session.execute(stmt)).scalars()
+
+
+async def get_wishlist_related_users(session: AsyncSession, wishlist_id: int):
+    stmt = (
+        select(User).
+        join(wishlist_user_association).
+        where(wishlist_user_association.c.wishlist_id == wishlist_id)
+    )
+
+    return (await session.execute(stmt)).scalars()
+
+
+async def delete_wishlist(session: AsyncSession, wishlist_id: int):
+    wishlist = await get_wishlist_by_id(session, wishlist_id)
+    await session.delete(wishlist)
+    await session.commit()

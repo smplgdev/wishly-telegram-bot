@@ -9,20 +9,17 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
+from bot.bot_instance import bot
 from bot.config_reader import config, DB_URI
 from bot.handlers import add_item, main_menu, show_wishlist, edit_wishlist, gift_item, delete_item_from_wishlist
 from bot.handlers.admin import add_wishlist_to_gift_idea
 from bot.handlers.inline import show_wishlist_inline, non_logged_users_inline, show_gift_ideas
 from bot.middlewares.db import DbSessionMiddleware
-from bot.utils.scheduled_jobs import set_scheduled_jobs
+from bot.middlewares.get_scheduler import SchedulerMiddleware
+from bot.utils.scheduled_jobs.set_scheduled_jobs import set_scheduled_jobs
 from bot.utils.ui_commands import set_ui_commands
 
 logging.basicConfig(level=logging.INFO)
-
-bot = Bot(
-    token=config.BOT_TOKEN.get_secret_value(),
-    parse_mode='HTML'
-)
 
 
 async def main():
@@ -33,8 +30,8 @@ async def main():
         'default': RedisJobStore(jobs_key='dispatched_trips_jobs', run_times_key='dispatched_trips_running',
                                  host=config.REDIS_HOST, port=config.REDIS_PORT)
     }
-    scheduler = AsyncIOScheduler(jobstores=jobstores)
-    set_scheduled_jobs(scheduler, bot)
+    scheduler = AsyncIOScheduler(jobstores=jobstores, timezone='Europe/Berlin')
+    set_scheduled_jobs(scheduler)
 
     redis = Redis(
         host=config.REDIS_HOST,
@@ -44,7 +41,8 @@ async def main():
 
     # Setup dispatcher and bind routers to it
     dp = Dispatcher(storage=storage)
-    dp.update.middleware(DbSessionMiddleware(session_pool=sessionmaker))
+    dp.update.middleware.register(DbSessionMiddleware(session_pool=sessionmaker))
+    dp.update.middleware.register(SchedulerMiddleware(scheduler=scheduler))
 
     # Automatically reply to all callbacks
     dp.callback_query.middleware(CallbackAnswerMiddleware())
@@ -71,7 +69,7 @@ async def main():
     await set_ui_commands(bot)
 
     try:
-        # scheduler.start()
+        scheduler.start()
         await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
     finally:
         await dp.storage.close()
