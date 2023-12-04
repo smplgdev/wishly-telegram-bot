@@ -38,7 +38,6 @@ def setup_logging():
         setup_logging()
     """
     log_level = logging.INFO
-    bl.basic_colorized_config(level=log_level)
 
     logging.basicConfig(
         level=logging.INFO,
