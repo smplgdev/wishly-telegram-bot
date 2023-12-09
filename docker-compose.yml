@@ -17,7 +17,7 @@ services:
     env_file:
       - "./.env"
     ports:
-      - "5433:5433"
+      - "5432:5432"
     environment:
       POSTGRES_DB: ${DB_DATABASE}
       POSTGRES_USER: ${DB_USERNAME}
@@ -26,7 +26,6 @@ services:
       - .:/code
     networks:
       - botnet
-    command: -p 5433
 
   bot:
     container_name: wishly
