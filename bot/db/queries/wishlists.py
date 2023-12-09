@@ -107,7 +107,7 @@ async def get_all_parties_wishlists_in_days(session: AsyncSession, days: int = 5
 async def get_expired_wishlists(session: AsyncSession, date_: datetime.date = datetime.date.today()):
     stmt = (
         select(Wishlist).
-        where(Wishlist.expiration_date <= date_)
+        where(Wishlist.expiration_date + datetime.timedelta(days=1) <= date_)
     )
 
     return (await session.execute(stmt)).scalars()
