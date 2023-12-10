@@ -86,5 +86,6 @@ async def process_simple_calendar(
             misfire_grace_time=60 * 60
         )
         await call.message.answer(strings.wishlist_successfully_created(wishlist=wishlist),
+                                  disable_web_page_preview=True,
                                   reply_markup=add_items_keyboard(wishlist_id=wishlist.id))
         await state.clear()
