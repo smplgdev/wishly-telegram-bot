@@ -61,30 +61,4 @@ async def show_wishlist(
     )
 
     text = strings.wishlist_detailed_information(wishlist, owner)
-    await bot.send_message(user_telegram_id, text, reply_markup=markup)
-
-
-# Where is this function used????
-#
-# @router.callback_query(ItemCallback.filter(F.action == 'show'))
-# async def show_item(call: types.CallbackQuery, callback_data: ItemCallback):
-#     item_id = callback_data.item_id
-#     item = await ItemCommand.get(item_id)
-#     text = strings.item_info_text(title=item.title, description=item.description)
-#     wishlist = await WishlistCommand.get(item.wishlist_id)
-#     if wishlist.creator_tg_id == call.from_user.id:
-#         is_owner = True
-#     else:
-#         is_owner = False
-#
-#     markup = GetInlineKeyboardMarkup.item_markup(
-#         item=item,
-#         wishlist_hashcode=wishlist.wishlist_hashcode,
-#         is_owner=is_owner
-#     )
-#
-#     if item.photo_file_id is None:
-#         await call.message.edit_text(text, reply_markup=markup)
-#     else:
-#         await call.message.answer_photo(item.photo_file_id, caption=text, reply_markup=markup)
-#     await call.answer(cache_time=5)
+    await bot.send_message(user_telegram_id, text, disable_web_page_preview=True, reply_markup=markup)
