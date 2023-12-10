@@ -18,7 +18,6 @@ from bot.handlers.errors import error_handler
 from bot.handlers.inline import show_wishlist_inline, non_logged_users_inline, show_gift_ideas
 from bot.middlewares.db import DbSessionMiddleware
 from bot.middlewares.get_scheduler import SchedulerMiddleware
-from bot.utils.scheduled_jobs.set_scheduled_jobs import set_scheduled_jobs, clean_scheduled_jobs
 from bot.utils.ui_commands import set_ui_commands
 
 
@@ -37,7 +36,6 @@ def setup_logging():
     Example usage:
         setup_logging()
     """
-    log_level = logging.INFO
 
     logging.basicConfig(
         level=logging.INFO,
@@ -94,7 +92,6 @@ async def main():
     dp.include_router(show_gift_ideas.router)
     dp.include_router(show_wishlist_inline.router)
     dp.include_router(non_logged_users_inline.router)
-    # dp.include_router(error_handler.error_router)
 
     # Set bot commands in UI
     await set_ui_commands(bot)

@@ -49,8 +49,7 @@ go_to_wishlist = "Перейти в вишлист"
 delete_item = "❌ Удалить подарок из вишлиста"
 item_successfully_deleted = "Подарок успешно удалён из вишлиста"
 wishlist_title_too_long = "Этот заголовок слишком длинный. Пожалуйста, введите заголовок, длиной менее 64 символов"
-enter_expire_date = "Введите дату праздника в формате дд.мм.гггг" \
-                    "\n\nНапример: <i>24.11.2023</i>"
+enter_expire_date = "Выберите в календаре дату вашего праздника"
 
 
 def enter_new_expire_date(current_date: datetime.date):
