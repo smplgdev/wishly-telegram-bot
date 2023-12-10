@@ -1,7 +1,7 @@
 import asyncio
 import datetime
 
-from aiogram import Router, F, types, Bot
+from aiogram import Router, F, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -49,7 +49,7 @@ async def create_wishlist_step2(message: types.Message, state: FSMContext):
     await state.update_data(wishlist_title=message.text)
     await message.answer(
         strings.enter_expire_date,
-        reply_markup=await SimpleCalendar(locale=await get_user_locale(message.from_user)).start_calendar()
+        reply_markup=await SimpleCalendar().start_calendar()
     )
     await state.set_state(CreateWishlistStates.expiration_date)
 
@@ -63,7 +63,7 @@ async def process_simple_calendar(
         scheduler: AsyncIOScheduler,
 ):
     calendar = SimpleCalendar(
-        locale=await get_user_locale(call.from_user), show_alerts=True
+        show_alerts=True
     )
     calendar.set_dates_range(datetime.datetime.today(), datetime.datetime.today() + datetime.timedelta(days=365*10))
     selected, date = await calendar.process_selection(call, callback_data)

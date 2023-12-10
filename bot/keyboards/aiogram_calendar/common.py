@@ -17,7 +17,6 @@ class GenericCalendar:
 
     def __init__(
         self,
-        locale: str = None,
         cancel_btn: str = None,
         today_btn: str = None,
         show_alerts: bool = False
@@ -31,11 +30,6 @@ class GenericCalendar:
         show_alerts (bool): defines how the date range error would shown (defaults to False)
         """
         self._labels = CalendarLabels()
-        if locale:
-            # getting month names and days of week in specified locale
-            with calendar.different_locale(locale):
-                self._labels.days_of_week = list(calendar.day_abbr)
-                self._labels.months = calendar.month_abbr[1:]
 
         if cancel_btn:
             self._labels.cancel_caption = cancel_btn
