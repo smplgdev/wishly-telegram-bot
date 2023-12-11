@@ -58,7 +58,7 @@ async def main():
     }
     scheduler = AsyncIOScheduler(jobstores=jobstores, timezone='Europe/Berlin')
     set_scheduled_jobs_once(scheduler)
-    logging.info("Current jobs: ", scheduler.get_jobs())
+    logging.info("Current jobs: ", "\n".join(job.__str__() for job in scheduler.get_jobs()))
 
     redis = Redis(
         host=config.REDIS_HOST,
