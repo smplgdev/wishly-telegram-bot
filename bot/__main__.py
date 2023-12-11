@@ -18,6 +18,7 @@ from bot.handlers.errors import error_handler
 from bot.handlers.inline import show_wishlist_inline, non_logged_users_inline, show_gift_ideas
 from bot.middlewares.db import DbSessionMiddleware
 from bot.middlewares.get_scheduler import SchedulerMiddleware
+from bot.utils.scheduled_jobs.set_scheduled_jobs import set_scheduled_jobs_once
 from bot.utils.ui_commands import set_ui_commands
 
 
@@ -56,7 +57,8 @@ async def main():
                                  host=config.REDIS_HOST, port=config.REDIS_PORT)
     }
     scheduler = AsyncIOScheduler(jobstores=jobstores, timezone='Europe/Berlin')
-    # set_scheduled_jobs(scheduler)
+    set_scheduled_jobs_once(scheduler)
+    logging.info("Current jobs: ", scheduler.get_jobs())
 
     redis = Redis(
         host=config.REDIS_HOST,
