@@ -57,8 +57,6 @@ async def main():
                                  host=config.REDIS_HOST, port=config.REDIS_PORT)
     }
     scheduler = AsyncIOScheduler(jobstores=jobstores, timezone='Europe/Berlin')
-    # set_scheduled_jobs_once(scheduler)
-    logging.info("Current jobs: ", "\n".join(job.__str__() for job in scheduler.get_jobs()))
 
     redis = Redis(
         host=config.REDIS_HOST,
@@ -100,6 +98,8 @@ async def main():
 
     try:
         scheduler.start()
+        set_scheduled_jobs_once(scheduler)
+        logging.info("Current jobs: ", "\n".join(job.__str__() for job in scheduler.get_jobs()))
         await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
     finally:
         await dp.storage.close()
