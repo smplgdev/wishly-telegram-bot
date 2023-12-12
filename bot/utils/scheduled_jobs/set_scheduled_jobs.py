@@ -21,23 +21,21 @@ def set_scheduled_jobs_once(
     scheduled_jobs_ids = [job.id for job in scheduler.get_jobs()]
 
     make_old_wishlists_inactive_id = "make_old_wishlists_inactive"
-    if make_old_wishlists_inactive_id in scheduled_jobs_ids:
-        scheduler.remove_job(make_old_wishlists_inactive_id)
-    scheduler.add_job(
-        make_old_wishlists_inactive,
-        CronTrigger(hour=2, minute=0),
-        id=make_old_wishlists_inactive_id,
-        misfire_grace_time=ONE_HOUR_IN_SECONDS
-    )
-    logging.info('Scheduled job "make_old_wishlists_inactive" added')
+    if make_old_wishlists_inactive_id not in scheduled_jobs_ids:
+        scheduler.add_job(
+            make_old_wishlists_inactive,
+            CronTrigger(hour=2, minute=0),
+            id=make_old_wishlists_inactive_id,
+            misfire_grace_time=ONE_HOUR_IN_SECONDS
+        )
+        logging.info('Scheduled job "make_old_wishlists_inactive" added')
 
     send_party_is_soon_message_id = "party_is_soon_message"
-    if send_party_is_soon_message_id in scheduled_jobs_ids:
-        scheduler.remove_job(send_party_is_soon_message_id)
-    scheduler.add_job(
-        party_is_soon_message,
-        CronTrigger(hour=15, minute=35),
-        id=send_party_is_soon_message_id,
-        misfire_grace_time=ONE_HOUR_IN_SECONDS,
-    )
-    logging.info('Scheduled job "party_is_soon_message" added')
+    if send_party_is_soon_message_id not in scheduled_jobs_ids:
+        scheduler.add_job(
+            party_is_soon_message,
+            CronTrigger(hour=15, minute=35),
+            id=send_party_is_soon_message_id,
+            misfire_grace_time=ONE_HOUR_IN_SECONDS,
+        )
+        logging.info('Scheduled job "party_is_soon_message" added')
