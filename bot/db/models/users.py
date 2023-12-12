@@ -19,3 +19,11 @@ class User(TimeBasedModel):
 
     wishlists = relationship("Wishlist", secondary=wishlist_user_association, lazy='selectin')
     items = relationship("Item", lazy='selectin')
+
+    def __repr__(self) -> str:
+        return ('<User('
+                f'id={self.id}, '
+                f'telegram_id={self.telegram_id}, '
+                f'name="{self.name}", '
+                f'is_active={self.is_active}'
+                ')>')

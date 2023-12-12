@@ -16,3 +16,11 @@ class Item(TimeBasedModel):
     price = Column(String(50))
     photo_file_id = Column(String(200))
     thumb_link = Column(String(100))
+
+    def __repr__(self) -> str:
+        return (f'<Item('
+                f'id={self.id}, '
+                f'wishlist_id={self.wishlist_id}, '
+                f'customer_id={self.customer_id}, '
+                f'title="{self.title}"'
+                f')>')

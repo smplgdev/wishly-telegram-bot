@@ -1,3 +1,5 @@
+from time import strftime
+
 from sqlalchemy import Date, Column, String, ForeignKey, Boolean, BigInteger, Integer
 from sqlalchemy.orm import relationship
 
@@ -17,3 +19,11 @@ class Wishlist(TimeBasedModel):
     items = relationship("Item", lazy='selectin')
 
     is_active = Column(Boolean, default=True)
+
+    def __repr__(self) -> str:
+        return ('<Wishlist('
+                f'id={self.id}, '
+                f'creator_id={self.creator_id}, '
+                f'title="{self.title}", '
+                f'expiration_date={strftime("%d.%m.%Y")}'
+                ')>')
