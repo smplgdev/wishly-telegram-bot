@@ -7,5 +7,5 @@ from bot.config_reader import DB_URI
 
 def get_async_session():
     engine = create_async_engine(DB_URI)
-    session_factory = async_sessionmaker(bind=engine)
+    session_factory = async_sessionmaker(bind=engine, expire_on_commit=False)
     return session_factory
