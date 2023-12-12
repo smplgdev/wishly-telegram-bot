@@ -1,15 +1,15 @@
 from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+from bot import strings
 from bot.db.models import Item
 from bot.db.models import Wishlist
 from bot.db.models.gift_ideas import GiftIdea
 from bot.db.models.gift_ideas_categories import GiftIdeaCategory
 from bot.keyboards.callback_factories import WishlistActionsCallback, ItemActionsCallback, \
-    MainMenuCallback, AddItemSkipStageCallback, GiftItemCallback, DeleteItemCallback, GiftCategoryCallback, \
-    GiftIdeaCallback, AddGiftIdeaToWishlistCallback, WishlistToGiftIdeaCallback, GoToGiftIdeasCallback, \
+    MainMenuCallback, AddItemSkipStageCallback, GiftItemCallback, DeleteItemCallback, GiftIdeaCallback, \
+    AddGiftIdeaToWishlistCallback, WishlistToGiftIdeaCallback, GoToGiftIdeasCallback, \
     UserGiftsCallback, DeleteGiftCallback
-from bot import strings
 
 
 def go_to_wishlist_keyboard(wishlist_id: int) -> InlineKeyboardMarkup:

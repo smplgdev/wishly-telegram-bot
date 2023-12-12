@@ -5,9 +5,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from bot import strings
 from bot.db.queries.gift_ideas import get_all_gift_ideas_categories, get_gift_idea_by_id, add_gift_idea_to_wishlist
 from bot.db.queries.users import get_user_or_none_by_telegram_id
+from bot.db.queries.wishlists import get_wishlist_by_id
 from bot.keyboards.callback_factories import GiftIdeaCallback, AddGiftIdeaToWishlistCallback, GoToGiftIdeasCallback
 from bot.keyboards.inline import get_categories_keyboard, get_gift_idea_keyboard, \
-    choose_wishlist_to_add_gift_idea_keyboard
+    choose_wishlist_to_add_gift_idea_keyboard, wishlist_items_keyboard, go_to_menu_or_add_another_item
 
 main_menu_router = Router()
 router = Router()
@@ -116,5 +117,6 @@ async def add_gift_to_wishlist_handler(
     gift_idea = await get_gift_idea_by_id(session, gift_idea_id)
     await add_gift_idea_to_wishlist(session, gift_idea, wishlist_id)
     await call.message.edit_text(
-        strings.gift_idea_successfully_added_to_wishlist
+        strings.gift_idea_successfully_added_to_wishlist,
+        reply_markup=go_to_menu_or_add_another_item(wishlist_id=wishlist_id)
     )
