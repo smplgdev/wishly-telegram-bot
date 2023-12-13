@@ -99,7 +99,6 @@ async def main():
     try:
         scheduler.start()
         set_scheduled_jobs_once(scheduler)
-        logging.info("Current jobs: ", "\n".join(job.__str__() for job in scheduler.get_jobs()))
         await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
     finally:
         await dp.storage.close()

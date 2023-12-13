@@ -117,7 +117,7 @@ async def get_wishlist_related_users(session: AsyncSession, wishlist_id: int):
     stmt = (
         select(User).
         join(wishlist_user_association).
-        where(wishlist_user_association.c.wishlist_id == wishlist_id)
+        filter(wishlist_user_association.c.wishlist_id == wishlist_id)
     )
 
     return (await session.execute(stmt)).scalars()
