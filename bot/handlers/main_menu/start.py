@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from bot import strings
 from bot.db.models.users import User
 from bot.db.queries.users import get_user_or_none_by_id
-from bot.db.queries.wishlists import get_wishlist_by_hashcode, add_wishlist_to_favourite, delete_wishlist
+from bot.db.queries.wishlists import get_wishlist_by_hashcode, add_wishlist_to_favourite
 from bot.keyboards.default import start_keyboard
 from bot.keyboards.inline import go_to_wishlist_keyboard
 from bot.utils.get_deep_link import get_deep_link
