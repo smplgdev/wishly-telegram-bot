@@ -25,5 +25,5 @@ class Wishlist(TimeBasedModel):
                 f'id={self.id}, '
                 f'creator_id={self.creator_id}, '
                 f'title="{self.title}", '
-                f'expiration_date={strftime("%d.%m.%Y")}'
+                f'expiration_date={strftime("%d.%m.%Y", self.expiration_date)}'
                 ')>')
