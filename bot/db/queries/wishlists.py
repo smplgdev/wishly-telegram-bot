@@ -113,6 +113,16 @@ async def get_expired_wishlists(session: AsyncSession, date_: datetime.date = da
     return (await session.execute(stmt)).scalars()
 
 
+async def get_wishlist_related_users(session: AsyncSession, wishlist_id: int):
+    stmt = (
+        select(User).
+        join(wishlist_user_association).
+        filter(wishlist_user_association.c.wishlist_id == wishlist_id)
+    )
+
+    return (await session.execute(stmt)).scalars()
+
+
 async def delete_wishlist(session: AsyncSession, wishlist_id: int):
     wishlist = await get_wishlist_by_id(session, wishlist_id)
     await session.delete(wishlist)

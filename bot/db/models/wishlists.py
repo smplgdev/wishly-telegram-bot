@@ -17,7 +17,7 @@ class Wishlist(TimeBasedModel):
     title = Column(String(64))
     expiration_date = Column(Date)
 
-    related_users = relationship("User", secondary=wishlist_user_association, lazy="selectin")
+    # related_users = relationship("User", secondary=wishlist_user_association, lazy="selectin")
     items = relationship("Item", lazy='selectin')
 
     is_active = Column(Boolean, default=True)

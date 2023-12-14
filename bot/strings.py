@@ -286,7 +286,7 @@ def party_soon(
 def wishlist_owner_party_soon(
         owner: User,
         wishlist: Wishlist,
-        related_users: list,
+        # related_users: list,
         gifted_items: list,
         non_gifted_items: list,
 ):
@@ -296,7 +296,6 @@ def wishlist_owner_party_soon(
     gifted_total_relate_percents = round(gifted_items_quantity / total_gifts_quantity * 100)
     text = f"Привет, {owner.name}! Совсем скоро состоится Ваш праздник «{wishlist.title}» " \
            f"({wishlist.expiration_date.strftime('%d.%m.%Y')}) 🥳" \
-           f"\n\nПо вашей пригласительной ссылке перешло около {len(related_users)} человек." \
            f"\nВ вишлисте было отмечено {gifted_items_quantity} из {total_gifts_quantity} подарков 🎁 " \
            f"({gifted_total_relate_percents} %)"
 
