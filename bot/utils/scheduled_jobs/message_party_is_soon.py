@@ -18,8 +18,8 @@ async def party_is_soon_message():
         wishlists = list()
         for days_before_celebration in [3, 7]:
             wishlists_to_add = await get_all_parties_wishlists_in_days(session, days=days_before_celebration)
-            if len(wishlists_to_add) > 0:
-                wishlists.append(*[wishlist for wishlist in wishlists_to_add])
+            for wishlist in list(wishlists_to_add):
+                wishlists.append(wishlist)
         logging.info("I found wishlists: " + str(len(list(wishlists))))
         for wishlist in wishlists:
             owner = await get_user_or_none_by_id(session, wishlist.creator_id)

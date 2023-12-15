@@ -6,5 +6,5 @@ from bot.db.models.abstract import TimeBasedModel, AnyList
 class SecretList(AnyList):
     __tablename__ = 'secret_lists'
 
-    users_limit = Column(Integer)
-    gifts_limit = Column(Integer)
+    max_participants = Column(Integer)
+    max_gifts = Column(Integer)

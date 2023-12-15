@@ -11,7 +11,7 @@ def start_keyboard():
         KeyboardButton(text=strings.my_wishlists)
     )
     builder.row(
-        KeyboardButton(text=strings.secret_list),
+        KeyboardButton(text=strings.secret_list_button),
         KeyboardButton(text=strings.gift_ideas),
     )
     return builder.as_markup(resize_keyboard=True)
