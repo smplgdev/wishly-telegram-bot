@@ -96,12 +96,13 @@ async def get_empty_wishlists_during_period(session: AsyncSession, days: int = 1
 
 async def get_all_parties_wishlists_in_days(session: AsyncSession, days: int = 5):
     today = datetime.date.today()
+    expiration_day = today + datetime.timedelta(days=days)
     stmt = (
         select(Wishlist).
         where(Wishlist.is_active.is_(True)).
-        where(today + datetime.timedelta(days=days) == Wishlist.expiration_date)
+        where(expiration_day == Wishlist.expiration_date)
     )
-    return (await session.execute(stmt)).scalars()
+    return (await session.execute(stmt)).scalars().all()
 
 
 async def get_expired_wishlists(session: AsyncSession, date_: datetime.date = datetime.date.today()):
@@ -115,11 +116,10 @@ async def get_expired_wishlists(session: AsyncSession, date_: datetime.date = da
 
 async def get_wishlist_related_users(session: AsyncSession, wishlist_id: int):
     stmt = (
-        select(User).
-        join(wishlist_user_association).
-        filter(wishlist_user_association.c.wishlist_id == wishlist_id)
+        select(WishlistUserAssociation).
+        join(User).
+        filter(WishlistUserAssociation.wishlist_id == wishlist_id)
     )
-
     return (await session.execute(stmt)).scalars()
 
 

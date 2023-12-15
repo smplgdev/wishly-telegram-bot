@@ -17,7 +17,12 @@ class User(TimeBasedModel):
     is_active = Column(Boolean, default=True)
     is_admin = Column(Boolean, default=False)
 
-    wishlists = relationship("Wishlist", secondary=wishlist_user_association, lazy='selectin')
+    wishlists = relationship(
+        "Wishlist",
+        secondary=wishlist_user_association,
+        back_populates="users",
+        lazy='selectin',
+    )
     items = relationship("Item", lazy='selectin')
 
     def __repr__(self) -> str:
