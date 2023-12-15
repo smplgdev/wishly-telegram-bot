@@ -1,24 +1,15 @@
-from sqlalchemy import Date, Column, String, ForeignKey, Boolean, BigInteger
+from sqlalchemy import Date, Column, String, ForeignKey, BigInteger
 from sqlalchemy.orm import relationship
 
 from bot.db.models.wishlist_user_association import wishlist_user_association
-from bot.db.models.abstract import TimeBasedModel
+from bot.db.models.abstract import AnyList
 
 
-class Wishlist(TimeBasedModel):
+class Wishlist(AnyList):
     __tablename__ = 'wishlists'
-
-    id = Column(BigInteger, primary_key=True)
-    creator_id = Column(BigInteger, ForeignKey('users.id'))
-
-    hashcode = Column(String(6), unique=True)
-    title = Column(String(64))
-    expiration_date = Column(Date)
 
     items = relationship("Item", lazy='selectin')
     users = relationship("User", secondary=wishlist_user_association, back_populates="wishlists", lazy="selectin")
-
-    is_active = Column(Boolean, default=True)
 
     def __repr__(self) -> str:
         return ('<Wishlist('

@@ -64,6 +64,7 @@ def run_migrations_online():
     from bot.db.models.items import Item
     from bot.db.models.gift_ideas import GiftIdea
     from bot.db.models.gift_ideas_categories import GiftIdeaCategory
+    from bot.db.models.secret_list import SecretList
 
     connectable = context.config.attributes.get("connection", None)
     if connectable is None:

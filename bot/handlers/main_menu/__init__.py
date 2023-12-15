@@ -1,6 +1,6 @@
 from aiogram import Router
 
-from . import start, gift_ideas
+from . import start, gift_ideas, secret_list
 from . import create_wishlist
 from . import return_to_main_menu
 from . import my_wishlists
@@ -13,6 +13,7 @@ main_menu_router.include_router(return_to_main_menu.main_menu_router)
 main_menu_router.include_router(gift_ideas.main_menu_router)
 main_menu_router.include_router(my_wishlists.main_menu_router)
 main_menu_router.include_router(create_wishlist.main_menu_router)
+main_menu_router.include_router(secret_list.main_menu_router)
 
 main_menu_router.message.middleware(update_user_data.UpdateUserDataMiddleware())
 main_menu_router.inline_query.middleware(update_user_data.UpdateUserDataMiddleware())

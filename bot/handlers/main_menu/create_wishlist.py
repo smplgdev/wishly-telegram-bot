@@ -1,7 +1,7 @@
 import asyncio
 import datetime
 
-from aiogram import Router, F, types
+from aiogram import Router, F, types, Bot
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -9,15 +9,17 @@ from apscheduler.triggers.date import DateTrigger
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot import strings
+from bot.db.models import Wishlist
 from bot.db.queries.users import get_user_or_none_by_telegram_id
 from bot.db.queries.wishlists import create_wishlist, add_wishlist_to_favourite
-from bot.keyboards.aiogram_calendar.common import get_user_locale
+from bot.handlers.create_list import create_list
 from bot.keyboards.aiogram_calendar.schemas import SimpleCalendarCallback
+from bot.keyboards.aiogram_calendar.simple_calendar import SimpleCalendar
 from bot.keyboards.callback_factories import WishlistActionsCallback
 from bot.keyboards.inline import add_items_keyboard
-from bot.keyboards.aiogram_calendar.simple_calendar import SimpleCalendar
 from bot.states.create_wishlist import CreateWishlistStates
 from bot.utils.scheduled_jobs.message_to_owners_of_wishlists_after_1_day import send_message_to_owner_of_wishlist
+from bot.utils.types import ListTypes
 
 router = Router()
 main_menu_router = Router()
@@ -25,20 +27,14 @@ main_menu_router = Router()
 
 @main_menu_router.message(Command('new_wishlist'))
 @main_menu_router.message(F.text == strings.create_wishlist)
-async def create_wishlist_handler(message: types.Message, state: FSMContext):
-    await create_wishlist_step1(message, state)
-
-
 @router.callback_query(WishlistActionsCallback.filter(F.action == 'create_wishlist'))
-async def create_wishlist_callback_handler(call: types.CallbackQuery, state: FSMContext):
-    await call.answer(cache_time=60)
-    await create_wishlist_step1(call.message, state)
-
-
-async def create_wishlist_step1(message: types.Message, state: FSMContext):
-    await state.clear()
-    await message.answer(strings.enter_wishlist_title)
-    await state.set_state(CreateWishlistStates.title)
+async def create_wishlist_handler(update: types.Update, state: FSMContext, bot: Bot):
+    await create_list(
+        bot=bot,
+        user_id=update.from_user.id,
+        list_type=ListTypes.WISHLIST,
+        state=state,
+    )
 
 
 @router.message(CreateWishlistStates.title)

@@ -19,13 +19,13 @@ async def send_message_to_owner_of_wishlist(
         if len(wishlist.items) == 0:
             text = strings.your_wishlist_is_still_empty(wishlist_title=wishlist.title)
         else:
-            # wishlist_related_users = wishlist.related_users
+            wishlist_related_users = wishlist.users
             gifted_items = list(filter(lambda item: item.customer_id, wishlist.items))
             non_gifted_items = list(filter(lambda item: not item.customer_id, wishlist.items))
             text = strings.wishlist_owner_party_soon(
                 owner=owner,
                 wishlist=wishlist,
-                # related_users=wishlist_related_users,
+                related_users=wishlist_related_users,
                 gifted_items=gifted_items,
                 non_gifted_items=non_gifted_items,
             )
