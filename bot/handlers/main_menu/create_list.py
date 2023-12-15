@@ -10,18 +10,18 @@ from apscheduler.triggers.date import DateTrigger
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot import strings
-from bot.db.queries.secret_list import create_secret_list
+from bot.db.models import User
+from bot.db.queries.secret_list import create_secret_list, add_secret_list_to_favourite
 from bot.db.queries.users import get_user_or_none_by_telegram_id
 from bot.db.queries.wishlists import create_wishlist, add_wishlist_to_favourite
 from bot.keyboards.aiogram_calendar.schemas import SimpleCalendarCallback
 from bot.keyboards.aiogram_calendar.simple_calendar import SimpleCalendar
-from bot.keyboards.callback_factories import WishlistActionsCallback
-from bot.keyboards.inline import add_items_keyboard
+from bot.keyboards.callback_factories import WishlistActionsCallback, SecretListCallback
+from bot.keyboards.inline import add_items_keyboard, show_user_secret_lists
 from bot.states.create_secret_list import CreateSecretListStates
 from bot.states.create_wishlist import CreateWishlistStates
 from bot.utils.scheduled_jobs.message_to_owners_of_wishlists_after_1_day import send_message_to_owner_of_wishlist
 from bot.utils.types import ListTypes
-
 
 router = Router()
 main_menu_router = Router()
@@ -40,10 +40,23 @@ async def create_wishlist_handler(update: Update, state: FSMContext, bot: Bot):
 
 
 @main_menu_router.message(F.text == strings.secret_list_button)
-async def create_secret_list_handler(message: Message, state: FSMContext, bot: Bot):
+async def menu_secret_list_handler(
+        message: Message,
+        user: User
+):
+    # Secret list menu - shows user's secret lists, suggests to create his own.
+    user_secret_lists = user.secret_lists
+    await message.answer(
+        text=strings.secret_list_menu_text,
+        reply_markup=show_user_secret_lists(user_secret_lists)
+    )
+
+
+@router.callback_query(SecretListCallback.filter(F.action == "create"))
+async def create_secret_list_handler(call: CallbackQuery, state: FSMContext, bot: Bot):
     await ask_user_about_list_title(
         bot=bot,
-        user_id=message.from_user.id,
+        user_id=call.from_user.id,
         list_type=ListTypes.SECRET_LIST,
         state=state
     )
@@ -186,5 +199,6 @@ async def handle_max_participants(message: Message, state: FSMContext, session: 
         expiration_date=expiration_date,
         max_participants=max_participants,
     )
+    await add_secret_list_to_favourite(session, user=creator, sl=sl)
     await message.answer(strings.secret_list_successfully_created(sl.title, sl.hashcode))
     await state.clear()

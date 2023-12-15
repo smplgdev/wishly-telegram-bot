@@ -2,14 +2,14 @@ from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from bot import strings
-from bot.db.models import Item
+from bot.db.models import Item, SecretList
 from bot.db.models import Wishlist
 from bot.db.models.gift_ideas import GiftIdea
 from bot.db.models.gift_ideas_categories import GiftIdeaCategory
 from bot.keyboards.callback_factories import WishlistActionsCallback, ItemActionsCallback, \
     MainMenuCallback, AddItemSkipStageCallback, GiftItemCallback, DeleteItemCallback, GiftIdeaCallback, \
     AddGiftIdeaToWishlistCallback, WishlistToGiftIdeaCallback, GoToGiftIdeasCallback, \
-    UserGiftsCallback, DeleteGiftCallback
+    UserGiftsCallback, DeleteGiftCallback, SecretListCallback
 
 
 def go_to_wishlist_keyboard(wishlist_id: int) -> InlineKeyboardMarkup:
@@ -154,6 +154,27 @@ def list_user_wishlists(wishlists: list[Wishlist], user_id: int):
         callback_data=WishlistActionsCallback(
             wishlist_id=0,
             action="create_wishlist"
+        )
+    )
+    builder.adjust(1)
+    return builder.as_markup()
+
+
+def show_user_secret_lists(secret_lists: list[SecretList]) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    for sl in secret_lists:
+        builder.button(
+            text=f"{sl.title} ({sl.expiration_date.strftime('%d.%m.%y')})",
+            callback_data=SecretListCallback(
+                action="show",
+                sl_id=sl.id
+            )
+        )
+    builder.button(
+        text=strings.create_secret_list_button,
+        callback_data=SecretListCallback(
+            action="create",
+            sl_id=0
         )
     )
     builder.adjust(1)

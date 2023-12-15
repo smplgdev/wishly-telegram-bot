@@ -10,11 +10,3 @@ class Wishlist(AnyList):
 
     items = relationship("Item", lazy='selectin')
     users = relationship("User", secondary=wishlist_user_association, back_populates="wishlists", lazy="selectin")
-
-    def __repr__(self) -> str:
-        return ('<Wishlist('
-                f'id={self.id}, '
-                f'creator_id={self.creator_id}, '
-                f'title="{self.title}", '
-                f'expiration_date={self.expiration_date}'
-                ')>')

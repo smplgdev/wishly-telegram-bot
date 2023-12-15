@@ -65,3 +65,8 @@ class AddGiftIdeaToWishlistCallback(CallbackData, prefix="add_gift_idea"):
 
 class WishlistToGiftIdeaCallback(CallbackData, prefix="admin"):
     wishlist_id: int
+
+
+class SecretListCallback(CallbackData, prefix="secret_list"):
+    action: str
+    sl_id: int

@@ -2,7 +2,7 @@ from datetime import date
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bot.db.models import SecretList
+from bot.db.models import SecretList, User
 from bot.db.queries.wishlists import get_unique_hashcode
 
 
@@ -27,3 +27,11 @@ async def create_secret_list(
     secret_list = await session.merge(secret_list_to_create)
     await session.commit()
     return secret_list
+
+
+async def add_secret_list_to_favourite(session: AsyncSession, user: User, sl: SecretList) \
+        -> bool:
+    if sl not in user.secret_lists:
+        user.secret_lists.append(sl)
+    await session.commit()
+    return True

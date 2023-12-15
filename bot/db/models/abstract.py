@@ -22,3 +22,11 @@ class AnyList(TimeBasedModel):
     expiration_date = Column(Date)
 
     is_active = Column(Boolean, default=True)
+
+    def __repr__(self) -> str:
+        return (f'<{self.__class__.__name__}('
+                f'id={self.id}, '
+                f'creator_id={self.creator_id}, '
+                f'title="{self.title}", '
+                f'expiration_date={self.expiration_date}'
+                ')>')
