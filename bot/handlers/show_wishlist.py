@@ -61,4 +61,4 @@ async def show_wishlist(
     )
 
     text = strings.wishlist_detailed_information(wishlist, owner)
-    await bot.send_message(user_telegram_id, text, disable_web_page_preview=True, reply_markup=markup)
+    await bot.send_message(user_telegram_id, text, reply_markup=markup)

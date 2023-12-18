@@ -7,8 +7,8 @@ class Item(TimeBasedModel):
     __tablename__ = 'items'
 
     id = Column(BigInteger, primary_key=True)
-    wishlist_id = Column(Integer, ForeignKey('wishlists.id'))
-    customer_id = Column(Integer, ForeignKey('users.id'))
+    wishlist_id = Column(Integer, ForeignKey('wishlists.id', ondelete="CASCADE"))
+    customer_id = Column(Integer, ForeignKey('users.id', ondelete="CASCADE"))
 
     title = Column(String(64))
     description = Column(String(512))

@@ -33,8 +33,9 @@ async def send_message_to_deeplinked_user(
                 if not is_sent:
                     await update_user(session, user, is_active=False)
             else:
-                is_sent = await bot.send_message(
-                    chat_id=user_telegram_id,
+                is_sent = await send_message(
+                    bot=bot,
+                    user_id=user_telegram_id,
                     text=strings.you_havent_selected_any_item_in_wishlist(wishlist.title),
                     reply_markup=wishlist_items_keyboard(
                         wishlist_id=wishlist_id,

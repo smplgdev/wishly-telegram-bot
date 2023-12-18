@@ -1,15 +1,13 @@
 import asyncio
 import logging
 
-from aiogram.exceptions import TelegramNotFound
-
 from bot import strings
 from bot.bot_instance import bot
 from bot.db.queries.users import get_user_or_none_by_id, update_user
-from bot.db.queries.wishlists import get_all_parties_wishlists_in_days, get_wishlist_related_users
+from bot.db.queries.wishlists import get_all_parties_wishlists_in_days
 from bot.keyboards.inline import wishlist_items_keyboard
-from bot.utils.send_message import send_message
 from bot.utils.get_async_session import get_async_session
+from bot.utils.send_message import send_message
 
 
 async def party_is_soon_message():

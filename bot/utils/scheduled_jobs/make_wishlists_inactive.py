@@ -10,6 +10,5 @@ async def make_old_wishlists_inactive(date_: datetime.date = datetime.date.today
         expired_wishlists = await get_expired_wishlists(session, date_)
         logging.info(f"Found {len(list(expired_wishlists))} wishlists to deactivate")
         for wishlist in expired_wishlists:
-            async with session.begin_nested():
-                await make_wishlist_inactive(session, wishlist)
-                logging.info("Wishlist %s successfully deleted" % repr(wishlist))
+            await make_wishlist_inactive(session, wishlist)
+            logging.info("Wishlist %s successfully deleted" % repr(wishlist))

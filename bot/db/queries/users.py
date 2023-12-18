@@ -41,7 +41,7 @@ async def register_user_or_pass(session: AsyncSession, **kwargs) -> User | None:
     if is_registered_user:
         return None
     user = User(**kwargs)
-    await session.merge(user)
+    user = await session.merge(user)
     await session.commit()
     return user
 

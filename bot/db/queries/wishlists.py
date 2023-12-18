@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.operators import and_
 
-from bot.db.models import Wishlist, User, wishlist_user_association
+from bot.db.models import Wishlist, User
 from bot.utils.random_code_generator import generate_random_code
 
 
@@ -113,19 +113,11 @@ async def get_all_parties_wishlists_in_days(session: AsyncSession, days: int = 5
 async def get_expired_wishlists(session: AsyncSession, date_: datetime.date = datetime.date.today()):
     stmt = (
         select(Wishlist).
+        where(Wishlist.is_active.is_(True)).
         where(Wishlist.expiration_date + datetime.timedelta(days=1) <= date_)
     )
 
-    return (await session.execute(stmt)).scalars()
-
-
-async def get_wishlist_related_users(session: AsyncSession, wishlist_id: int):
-    stmt = (
-        select(WishlistUserAssociation).
-        join(User).
-        filter(WishlistUserAssociation.wishlist_id == wishlist_id)
-    )
-    return (await session.execute(stmt)).scalars()
+    return (await session.execute(stmt)).scalars().all()
 
 
 async def delete_wishlist(session: AsyncSession, wishlist_id: int):

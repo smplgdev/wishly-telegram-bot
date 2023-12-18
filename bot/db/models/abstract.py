@@ -1,5 +1,6 @@
 import sqlalchemy as sa
 from sqlalchemy import Column, DateTime, BigInteger, String, Date, Boolean, ForeignKey
+from sqlalchemy.orm import relationship
 
 from bot.db.base import Base
 
@@ -15,7 +16,7 @@ class AnyList(TimeBasedModel):
     __abstract__ = True
 
     id = Column(BigInteger, primary_key=True)
-    creator_id = Column(BigInteger, ForeignKey('users.id'))
+    creator_id = Column(BigInteger, ForeignKey('users.id', ondelete="CASCADE"))
 
     hashcode = Column(String(6), unique=True)
     title = Column(String(64))

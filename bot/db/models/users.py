@@ -2,7 +2,6 @@ from sqlalchemy import String, Boolean, BigInteger, Column
 from sqlalchemy.orm import relationship
 
 from bot.db.models.abstract import TimeBasedModel
-from bot.db.models.secret_list_user_association import secret_list_user_association
 from bot.db.models.wishlist_user_association import wishlist_user_association
 
 
@@ -24,13 +23,9 @@ class User(TimeBasedModel):
         back_populates="users",
         lazy='selectin',
     )
-    secret_lists = relationship(
-        "SecretList",
-        secondary=secret_list_user_association,
-        back_populates="users",
-        lazy="selectin",
-    )
     items = relationship("Item", lazy='selectin')
+
+    participations = relationship('SecretListParticipant', back_populates="user", lazy="selectin")
 
     def __repr__(self) -> str:
         return ('<User('

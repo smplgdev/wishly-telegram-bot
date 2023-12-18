@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot import strings
 from bot.db.models import User
-from bot.db.queries.secret_list import create_secret_list, add_secret_list_to_favourite
+from bot.db.queries.secret_list import create_secret_list, get_user_secret_lists
 from bot.db.queries.users import get_user_or_none_by_telegram_id
 from bot.db.queries.wishlists import create_wishlist, add_wishlist_to_favourite
 from bot.keyboards.aiogram_calendar.schemas import SimpleCalendarCallback
@@ -42,10 +42,14 @@ async def create_wishlist_handler(update: Update, state: FSMContext, bot: Bot):
 @main_menu_router.message(F.text == strings.secret_list_button)
 async def menu_secret_list_handler(
         message: Message,
-        user: User
+        user: User,
+        session: AsyncSession,
 ):
     # Secret list menu - shows user's secret lists, suggests to create his own.
-    user_secret_lists = user.secret_lists
+    user_secret_lists = []
+    user_secret_lists.extend([sl for sl in await get_user_secret_lists(session, user.id)])
+    user_secret_lists.extend([p.secret_list for p in user.participations])
+
     await message.answer(
         text=strings.secret_list_menu_text,
         reply_markup=show_user_secret_lists(user_secret_lists)
@@ -199,6 +203,5 @@ async def handle_max_participants(message: Message, state: FSMContext, session: 
         expiration_date=expiration_date,
         max_participants=max_participants,
     )
-    await add_secret_list_to_favourite(session, user=creator, sl=sl)
     await message.answer(strings.secret_list_successfully_created(sl.title, sl.hashcode))
     await state.clear()

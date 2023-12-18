@@ -70,3 +70,4 @@ class WishlistToGiftIdeaCallback(CallbackData, prefix="admin"):
 class SecretListCallback(CallbackData, prefix="secret_list"):
     action: str
     sl_id: int
+    participant_id: int

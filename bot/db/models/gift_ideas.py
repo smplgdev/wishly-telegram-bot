@@ -7,7 +7,7 @@ class GiftIdea(TimeBasedModel):
     __tablename__ = "gift_ideas"
 
     id = Column(Integer, primary_key=True)
-    gift_idea_category_id = Column(Integer, ForeignKey('gift_idea_categories.id'))
+    gift_idea_category_id = Column(Integer, ForeignKey('gift_idea_categories.id', ondelete="CASCADE"))
     title = Column(String(64))
     description = Column(String(512))
     photo_link = Column(String(100))

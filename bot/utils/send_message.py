@@ -12,7 +12,7 @@ async def send_message(
     text: str,
     disable_notification: bool = False,
     reply_markup: InlineKeyboardMarkup = None,
-) -> bool:
+) -> bool | None:
     """
     Safe messages sender
 
@@ -34,6 +34,7 @@ async def send_message(
         logging.error("Telegram server says - Bad Request: chat not found")
     except exceptions.TelegramForbiddenError:
         logging.error(f"Target [ID:{user_id}]: got TelegramForbiddenError")
+        return False
     except exceptions.TelegramRetryAfter as e:
         logging.error(
             f"Target [ID:{user_id}]: Flood limit is exceeded. Sleep {e.retry_after} seconds."
@@ -47,4 +48,4 @@ async def send_message(
     else:
         logging.info(f"Target [ID:{user_id}]: success")
         return True
-    return False
+    return None
