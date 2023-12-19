@@ -1,7 +1,7 @@
 import asyncio
 import logging
 
-from aiogram import Bot, Dispatcher
+from aiogram import Dispatcher
 from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.utils.callback_answer import CallbackAnswerMiddleware
 from apscheduler.jobstores.redis import RedisJobStore
@@ -12,14 +12,12 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from bot.bot_instance import bot
 from bot.config_reader import config, DB_URI
 from bot.handlers import add_item, main_menu, show_wishlist, edit_wishlist, gift_item, delete_item_from_wishlist, \
-    my_gifts, show_secret_list
+    my_gifts
 from bot.handlers.admin import add_wishlist_to_gift_idea, file_id
 from bot.handlers.errors import error_handler
 from bot.handlers.inline import show_wishlist_inline, non_logged_users_inline, show_gift_ideas
 from bot.middlewares.db import DbSessionMiddleware
 from bot.middlewares.get_scheduler import SchedulerMiddleware
-from bot.utils.scheduled_jobs.make_wishlists_inactive import make_old_wishlists_inactive
-from bot.utils.scheduled_jobs.message_party_is_soon import party_is_soon_message
 from bot.utils.scheduled_jobs.set_scheduled_jobs import set_scheduled_jobs_once
 from bot.utils.ui_commands import set_ui_commands
 
@@ -83,7 +81,6 @@ async def main():
     dp.include_router(gift_item.router)
     dp.include_router(delete_item_from_wishlist.router)
     dp.include_router(my_gifts.router)
-    dp.include_router(show_secret_list.router)
 
     # Admin handlers
     dp.include_router(add_wishlist_to_gift_idea.admin_router)
@@ -93,9 +90,9 @@ async def main():
     dp.include_router(error_handler.router)
 
     # Inline handlers
+    dp.include_router(non_logged_users_inline.router)
     dp.include_router(show_gift_ideas.router)
     dp.include_router(show_wishlist_inline.router)
-    dp.include_router(non_logged_users_inline.router)
 
     # Set bot commands in UI
     await set_ui_commands(bot)

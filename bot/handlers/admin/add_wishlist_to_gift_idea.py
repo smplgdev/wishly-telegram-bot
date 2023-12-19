@@ -6,10 +6,10 @@ from bot.db.queries.gift_ideas import make_gift_idea_wishlist_from_wishlist
 from bot.db.queries.wishlists import get_wishlist_by_id
 from bot.keyboards.callback_factories import WishlistToGiftIdeaCallback
 
-router = Router()
+admin_router = Router()
 
 
-@router.callback_query(WishlistToGiftIdeaCallback.filter())
+@admin_router.callback_query(WishlistToGiftIdeaCallback.filter())
 async def add_wishlist_to_gift_idea_handler(call: types.CallbackQuery,
                                             callback_data: WishlistToGiftIdeaCallback,
                                             session: AsyncSession):
