@@ -11,8 +11,7 @@ from bot.utils.send_message import send_message
 
 
 async def party_is_soon_message():
-    session = get_async_session()
-    async with session.begin() as session:
+    async with get_async_session().begin() as session:
         wishlists = list()
         for days_before_celebration in [3, 7]:
             wishlists_to_add = await get_all_parties_wishlists_in_days(session, days=days_before_celebration)

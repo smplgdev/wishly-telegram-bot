@@ -1,7 +1,9 @@
+import logging
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bot.db.models import Item
+from bot.db.models import Item, Wishlist
 from bot.db.models.users import User
 
 
@@ -43,6 +45,7 @@ async def register_user_or_pass(session: AsyncSession, **kwargs) -> User | None:
     user = User(**kwargs)
     user = await session.merge(user)
     await session.commit()
+    logging.info("Registered new user – %s" % user)
     return user
 
 

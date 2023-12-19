@@ -9,7 +9,7 @@ from bot.db.models.gift_ideas_categories import GiftIdeaCategory
 from bot.keyboards.callback_factories import WishlistActionsCallback, ItemActionsCallback, \
     MainMenuCallback, AddItemSkipStageCallback, GiftItemCallback, DeleteItemCallback, GiftIdeaCallback, \
     AddGiftIdeaToWishlistCallback, WishlistToGiftIdeaCallback, GoToGiftIdeasCallback, \
-    UserGiftsCallback, DeleteGiftCallback, SecretListCallback
+    UserGiftsCallback, DeleteGiftCallback, SecretListCallback, WishlistPurposeCallback
 from bot.utils.types import ListTypes
 
 
@@ -208,6 +208,19 @@ def add_gift_to_secret_list(sl_id: int, participant_id: int) -> InlineKeyboardMa
     builder = InlineKeyboardBuilder()
     builder.button(text=strings.add_gift_to_my_wishlist,
                    callback_data=SecretListCallback(action="add_item", sl_id=sl_id, participant_id=participant_id))
+    return builder.as_markup()
+
+
+def wishlist_purposes_keyboard() -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    for purpose in strings.WISHLIST_PURPOSES:
+        builder.button(
+            text=purpose,
+            callback_data=WishlistPurposeCallback(
+                purpose=purpose
+            )
+        )
+    builder.adjust(2)
     return builder.as_markup()
 
 

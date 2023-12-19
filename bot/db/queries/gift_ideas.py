@@ -1,3 +1,5 @@
+import logging
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -55,6 +57,7 @@ async def add_gift_idea_to_wishlist(session: AsyncSession,
 
     item = await session.merge(item)
     await session.commit()
+    logging.info("Gift idea added to wishlist\n%s" % item)
     return item
 
 

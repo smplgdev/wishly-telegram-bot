@@ -18,6 +18,8 @@ from bot.handlers.errors import error_handler
 from bot.handlers.inline import show_wishlist_inline, non_logged_users_inline, show_gift_ideas
 from bot.middlewares.db import DbSessionMiddleware
 from bot.middlewares.get_scheduler import SchedulerMiddleware
+from bot.utils.scheduled_jobs.make_wishlists_inactive import make_old_wishlists_inactive
+from bot.utils.scheduled_jobs.message_party_is_soon import party_is_soon_message
 from bot.utils.scheduled_jobs.set_scheduled_jobs import set_scheduled_jobs_once
 from bot.utils.ui_commands import set_ui_commands
 

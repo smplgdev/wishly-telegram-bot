@@ -1,4 +1,5 @@
 import datetime
+import logging
 from datetime import date
 
 from sqlalchemy import select
@@ -42,16 +43,19 @@ async def add_wishlist_to_favourite(session: AsyncSession, user: User, wishlist:
 async def create_wishlist(session: AsyncSession,
                           creator_id: int,
                           title: str,
+                          purpose: str,
                           expiration_date: date) -> Wishlist:
     hashcode = await get_unique_hashcode(session)
     wishlist_to_create = Wishlist(
         creator_id=creator_id,
         title=title,
+        purpose=purpose,
         hashcode=hashcode,
         expiration_date=expiration_date
     )
     wishlist = await session.merge(wishlist_to_create)
     await session.commit()
+    logging.info("Created new wishlist – %s" % wishlist)
     return wishlist
 
 
@@ -81,6 +85,7 @@ async def make_wishlist_inactive(session: AsyncSession, wishlist: Wishlist):
     if not wishlist.is_active:
         return
     setattr(wishlist, "is_active", False)
+    logging.info("Wishlist deactivated %s" % wishlist)
     await session.commit()
 
 

@@ -1,4 +1,4 @@
-from sqlalchemy import String, Boolean, BigInteger, Column
+from sqlalchemy import String, Boolean, BigInteger, Column, Date
 from sqlalchemy.orm import relationship
 
 from bot.db.models.abstract import TimeBasedModel
@@ -14,6 +14,9 @@ class User(TimeBasedModel):
 
     name = Column(String(64))
     username = Column(String(32))
+
+    date_of_birth = Column(Date, default=None)
+
     is_active = Column(Boolean, default=True)
     is_admin = Column(Boolean, default=False)
 
@@ -24,8 +27,6 @@ class User(TimeBasedModel):
         lazy='selectin',
     )
     items = relationship("Item", lazy='selectin')
-
-    participations = relationship('SecretListParticipant', back_populates="user", lazy="selectin")
 
     def __repr__(self) -> str:
         return ('<User('

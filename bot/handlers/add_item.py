@@ -7,35 +7,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot import strings
 from bot.db.queries.items import count_items_in_wishlist, add_item_to_wishlist
-from bot.db.queries.secret_list import get_secret_list_or_none_by_id, add_item_to_secret_list, \
-    get_participant_or_none_by_id
 from bot.db.queries.wishlists import get_wishlist_by_id
 from bot.keyboards.callback_factories import ItemActionsCallback, SecretListCallback
 from bot.keyboards.default import skip_stage_keyboard
 from bot.keyboards.inline import ask_user_for_adding_item, go_to_menu_or_add_another_item, add_gift_to_secret_list
 from bot.states.add_item import AddItemStates
 from bot.utils.photo_link_telegraph import upload_photo
-from bot.utils.types import ListTypes
 
 router = Router()
-
-
-# @router.callback_query(SecretListCallback.filter(F.action == "add_item"))
-# async def add_new_item_to_secret_list(call: types.CallbackQuery,
-#                                       state: FSMContext,
-#                                       callback_data: SecretListCallback,
-#                                       session: AsyncSession):
-#     sl_id = callback_data.sl_id
-#     sl = await get_secret_list_or_none_by_id(session, sl_id)
-#     participant_id = callback_data.participant_id
-#     participant = await get_participant_or_none_by_id(session, participant_id)
-#     if len(participant.wishlist) == sl.max_gifts:
-#         await call.answer(strings.max_gifts_limit_reached % sl.max_gifts, show_alert=True)
-#         return
-#     await call.message.answer(strings.enter_item_title)
-#     await state.update_data(sl_id=sl_id)
-#     await state.set_state(AddItemStates.title)
-#     await call.answer(cache_time=10)
 
 
 @router.callback_query(ItemActionsCallback.filter(F.action == "new_item"))
@@ -126,19 +105,6 @@ async def apply_adding_item_handler(call: types.CallbackQuery, state: FSMContext
     photo_link = data.get("item_photo_link")
     thumb_link = data.get("thumb_link")
     photo_file_id = data.get("item_photo_file_id")
-    # if sl_id := data.get("sl_id"):
-    #     sl = await get_secret_list_or_none_by_id(session, int(sl_id))
-    #     participant = list(filter(lambda p: p.user.telegram_id == call.from_user.id, sl.participants))[0]
-    #     await add_item_to_secret_list(
-    #         session=session,
-    #         participant_id=participant.id,
-    #         title=title,
-    #         photo_link=photo_link,
-    #         thumb_link=thumb_link,
-    #         description=description,
-    #         photo_file_id=photo_file_id
-    #     )
-    #     markup = add_gift_to_secret_list(sl_id=int(sl_id), participant_id=participant.id)
     wishlist_id = data.get("wishlist_id")
     await add_item_to_wishlist(
         session=session,
@@ -156,7 +122,6 @@ async def apply_adding_item_handler(call: types.CallbackQuery, state: FSMContext
 
 
 @router.callback_query(AddItemStates.final, ItemActionsCallback.filter(F.action == "discard_add_item"))
-# @router.callback_query(AddItemStates.final, SecretListCallback.filter(F.action == "discard_add_item"))
 async def discard_adding_item_handler(call: types.CallbackQuery,
                                       state: FSMContext,
                                       callback_data: SecretListCallback | ItemActionsCallback):

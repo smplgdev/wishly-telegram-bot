@@ -1,3 +1,5 @@
+import logging
+
 from sqlalchemy import select, func, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -27,6 +29,7 @@ async def add_item_to_wishlist(
     )
     item = await session.merge(item_to_create)
     await session.commit()
+    logging.info("New item added %s" % item)
     return item
 
 
