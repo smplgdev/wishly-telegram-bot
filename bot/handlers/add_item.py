@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from bot import strings
 from bot.db.queries.items import count_items_in_wishlist, add_item_to_wishlist
 from bot.db.queries.wishlists import get_wishlist_by_id
-from bot.keyboards.callback_factories import ItemActionsCallback, SecretListCallback
+from bot.keyboards.callback_factories import ItemActionsCallback
 from bot.keyboards.default import skip_stage_keyboard
 from bot.keyboards.inline import ask_user_for_adding_item, go_to_menu_or_add_another_item, add_gift_to_secret_list
 from bot.states.add_item import AddItemStates
@@ -24,7 +24,7 @@ async def add_new_item_to_wishlist(call: types.CallbackQuery, state: FSMContext,
     wishlist = await get_wishlist_by_id(session, wishlist_id)
 
     item_counter = await count_items_in_wishlist(session, wishlist_id)
-    if item_counter > 50 or (wishlist.participant_id and len(wishlist.items) >= 3):
+    if item_counter > 50:
         await call.message.answer(strings.gift_limit_reached)
         return
     await call.message.answer(strings.enter_item_title)
@@ -124,15 +124,9 @@ async def apply_adding_item_handler(call: types.CallbackQuery, state: FSMContext
 @router.callback_query(AddItemStates.final, ItemActionsCallback.filter(F.action == "discard_add_item"))
 async def discard_adding_item_handler(call: types.CallbackQuery,
                                       state: FSMContext,
-                                      callback_data: SecretListCallback | ItemActionsCallback):
-    if isinstance(callback_data, SecretListCallback):
-        sl_id = int(callback_data.sl_id)
-        participant_id = callback_data.participant_id
-        markup = add_gift_to_secret_list(sl_id=sl_id, participant_id=participant_id)
-    elif isinstance(callback_data, ItemActionsCallback):
-        wishlist_id = int(callback_data.wishlist_id)
-        markup = go_to_menu_or_add_another_item(wishlist_id=wishlist_id)
-    else:
-        return
+                                      callback_data: ItemActionsCallback):
+    wishlist_id = int(callback_data.wishlist_id)
+    markup = go_to_menu_or_add_another_item(wishlist_id=wishlist_id)
+
     await call.message.edit_text(strings.creating_item_discard, reply_markup=markup)
     await state.clear()
