@@ -52,7 +52,8 @@ async def show_wishlist_inline_handler(query: types.InlineQuery, session: AsyncS
                     title=item.title,
                     description=item.description,
                     photo_link=item.photo_link
-                )
+                ),
+                disable_web_page_preview=False,
             ),
             reply_markup=item_markup(
                 item=item,
