@@ -45,9 +45,9 @@ class DialogCalendarCallback(CalendarCallback, prefix="dialog_calendar"):
 
 class CalendarLabels(BaseModel):
     "Schema to pass labels for calendar. Can be used to put in different languages"
-    days_of_week: conlist(str, max_length=7, min_length=7) = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
+    days_of_week: conlist(str, max_length=7, min_length=7) = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
     months: conlist(str, max_length=12, min_length=12) = [
-        "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        "Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"
     ]
     cancel_caption: str = Field(default='Cancel', description='Caprion for Cancel button')
     today_caption: str = Field(default='Today', description='Caprion for Cancel button')
@@ -58,21 +58,3 @@ HIGHLIGHT_FORMAT = "[{}]"
 
 def highlight(text):
     return HIGHLIGHT_FORMAT.format(text)
-
-
-def superscript(text):
-    normal = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-=()"
-    super_s = "ᴬᴮᶜᴰᴱᶠᴳᴴᴵᴶᴷᴸᴹᴺᴼᴾQᴿˢᵀᵁⱽᵂˣʸᶻᵃᵇᶜᵈᵉᶠᵍʰᶦʲᵏˡᵐⁿᵒᵖ۹ʳˢᵗᵘᵛʷˣʸᶻ⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾"
-    output = ''
-    for i in text:
-        output += (super_s[normal.index(i)] if i in normal else i)
-    return output
-
-
-def subscript(text):
-    normal = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-=()"
-    sub_s = "ₐ₈CDₑբGₕᵢⱼₖₗₘₙₒₚQᵣₛₜᵤᵥwₓᵧZₐ♭꜀ᑯₑբ₉ₕᵢⱼₖₗₘₙₒₚ૧ᵣₛₜᵤᵥwₓᵧ₂₀₁₂₃₄₅₆₇₈₉₊₋₌₍₎"
-    output = ''
-    for i in text:
-        output += (sub_s[normal.index(i)] if i in normal else i)
-    return output

@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.types import CallbackQuery
 
-from bot.keyboards.aiogram_calendar.schemas import SimpleCalendarCallback, SimpleCalAct, highlight, superscript
+from bot.keyboards.aiogram_calendar.schemas import SimpleCalendarCallback, SimpleCalAct, highlight
 from bot.keyboards.aiogram_calendar.common import GenericCalendar
 
 
@@ -34,9 +34,9 @@ class SimpleCalendar(GenericCalendar):
         def format_day_string():
             date_to_check = datetime(year, month, day)
             if self.min_date and date_to_check < self.min_date:
-                return superscript(str(day))
+                return str(day)
             elif self.max_date and date_to_check > self.max_date:
-                return superscript(str(day))
+                return str(day)
             return str(day)
 
         def highlight_day():

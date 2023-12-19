@@ -4,7 +4,7 @@ from datetime import datetime
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.types import CallbackQuery
 
-from .schemas import DialogCalendarCallback, DialogCalAct, highlight, superscript
+from .schemas import DialogCalendarCallback, DialogCalAct, highlight
 from .common import GenericCalendar
 
 
@@ -85,9 +85,9 @@ class DialogCalendar(GenericCalendar):
         def format_day_string():
             date_to_check = datetime(year, month, day)
             if self.min_date and date_to_check < self.min_date:
-                return superscript(str(day))
+                return str(day)
             elif self.max_date and date_to_check > self.max_date:
-                return superscript(str(day))
+                return str(day)
             return str(day)
 
         def highlight_day():
