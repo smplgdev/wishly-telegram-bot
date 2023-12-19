@@ -10,7 +10,7 @@ from bot.db.queries.items import count_items_in_wishlist, add_item_to_wishlist
 from bot.db.queries.wishlists import get_wishlist_by_id
 from bot.keyboards.callback_factories import ItemActionsCallback
 from bot.keyboards.default import skip_stage_keyboard
-from bot.keyboards.inline import ask_user_for_adding_item, go_to_menu_or_add_another_item, add_gift_to_secret_list
+from bot.keyboards.inline import ask_user_for_adding_item, go_to_menu_or_add_another_item
 from bot.states.add_item import AddItemStates
 from bot.utils.photo_link_telegraph import upload_photo
 

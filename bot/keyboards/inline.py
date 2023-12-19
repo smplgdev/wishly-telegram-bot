@@ -9,8 +9,7 @@ from bot.db.models.gift_ideas_categories import GiftIdeaCategory
 from bot.keyboards.callback_factories import WishlistActionsCallback, ItemActionsCallback, \
     MainMenuCallback, AddItemSkipStageCallback, GiftItemCallback, DeleteItemCallback, GiftIdeaCallback, \
     AddGiftIdeaToWishlistCallback, WishlistToGiftIdeaCallback, GoToGiftIdeasCallback, \
-    UserGiftsCallback, DeleteGiftCallback, SecretListCallback, WishlistPurposeCallback
-from bot.utils.types import ListTypes
+    UserGiftsCallback, DeleteGiftCallback, WishlistPurposeCallback
 
 
 def go_to_wishlist_keyboard(wishlist_id: int) -> InlineKeyboardMarkup:
@@ -81,19 +80,6 @@ def go_to_menu_or_add_another_item(wishlist_id: int):
         callback_data=MainMenuCallback()
     )
     builder.adjust(1)
-    return builder.as_markup()
-
-
-def go_to_secret_list(sl_id: int, participant_id: int) -> InlineKeyboardMarkup:
-    builder = InlineKeyboardBuilder()
-    builder.button(
-        text=strings.go_to_secret_list,
-        callback_data=SecretListCallback(
-            action="show",
-            sl_id=sl_id,
-            participant_id=participant_id,
-        )
-    )
     return builder.as_markup()
 
 
@@ -171,43 +157,6 @@ def list_user_wishlists(wishlists: list[Wishlist], user_id: int):
         )
     )
     builder.adjust(1)
-    return builder.as_markup()
-
-
-def show_user_secret_lists(secret_lists, ) -> InlineKeyboardMarkup:
-    builder = InlineKeyboardBuilder()
-    for sl in secret_lists:
-        builder.button(
-            text=f"{sl.title} ({sl.expiration_date.strftime('%d.%m.%y')})",
-            callback_data=SecretListCallback(
-                action="show",
-                participant_id=0,
-                sl_id=sl.id
-            )
-        )
-    builder.button(
-        text=strings.create_secret_list_button,
-        callback_data=SecretListCallback(
-            action="create",
-            participant_id=0,
-            sl_id=0
-        )
-    )
-    builder.adjust(1)
-    return builder.as_markup()
-
-
-def secret_list_owner_keyboard(sl_id: int) -> InlineKeyboardMarkup:
-    builder = InlineKeyboardBuilder()
-    builder.button(text=strings.start_event_button,
-                   callback_data=SecretListCallback(action="start", sl_id=sl_id, participant_id=0))
-    return builder.as_markup()
-
-
-def add_gift_to_secret_list(sl_id: int, participant_id: int) -> InlineKeyboardMarkup:
-    builder = InlineKeyboardBuilder()
-    builder.button(text=strings.add_gift_to_my_wishlist,
-                   callback_data=SecretListCallback(action="add_item", sl_id=sl_id, participant_id=participant_id))
     return builder.as_markup()
 
 
