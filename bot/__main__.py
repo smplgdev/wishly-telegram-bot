@@ -13,7 +13,7 @@ from bot.bot_instance import bot
 from bot.config_reader import config, DB_URI
 from bot.handlers import add_item, main_menu, show_wishlist, edit_wishlist, gift_item, delete_item_from_wishlist, \
     my_gifts, show_secret_list
-from bot.handlers.admin import add_wishlist_to_gift_idea
+from bot.handlers.admin import add_wishlist_to_gift_idea, file_id
 from bot.handlers.errors import error_handler
 from bot.handlers.inline import show_wishlist_inline, non_logged_users_inline, show_gift_ideas
 from bot.middlewares.db import DbSessionMiddleware
@@ -86,7 +86,8 @@ async def main():
     dp.include_router(show_secret_list.router)
 
     # Admin handlers
-    dp.include_router(add_wishlist_to_gift_idea.router)
+    dp.include_router(add_wishlist_to_gift_idea.admin_router)
+    dp.include_router(file_id.admin_router)
 
     # Error handler
     dp.include_router(error_handler.router)
