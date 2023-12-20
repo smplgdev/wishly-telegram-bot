@@ -50,6 +50,8 @@ def setup_logging():
 
 async def main():
     setup_logging()
+    # await party_is_soon_message()
+    # return
 
     engine = create_async_engine(url=DB_URI)
     sessionmaker = async_sessionmaker(engine, expire_on_commit=False)

@@ -1,3 +1,5 @@
+from time import strftime
+
 from sqlalchemy import Date, Column, String, ForeignKey, BigInteger, Boolean
 from sqlalchemy.orm import relationship
 

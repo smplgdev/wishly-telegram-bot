@@ -1,3 +1,5 @@
+import html
+
 from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
@@ -134,14 +136,13 @@ def go_back_to_wishlist(wishlist_id: int):
 def list_user_wishlists(wishlists: list[Wishlist], user_id: int):
     builder = InlineKeyboardBuilder()
     for wishlist in wishlists:
+        wishlist_title = html.unescape(wishlist.title)
         if wishlist.creator_id == user_id:
             creator_prefix = "💎 "
         else:
             creator_prefix = ""
-        if len(wishlist.title) > 28:
-            wishlist_title = wishlist.title[:28] + '...'
-        else:
-            wishlist_title = wishlist.title
+        if len(wishlist_title) > 28:
+            wishlist_title = wishlist_title[:28] + '...'
         builder.button(
             text=f"{creator_prefix}{wishlist_title} ({wishlist.expiration_date.strftime('%d.%m.%y')})",
             callback_data=WishlistActionsCallback(

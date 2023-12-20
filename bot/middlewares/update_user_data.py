@@ -1,3 +1,4 @@
+import html
 from typing import Callable, Dict, Any, Awaitable
 
 from aiogram import BaseMiddleware
@@ -16,7 +17,7 @@ class UpdateUserDataMiddleware(BaseMiddleware):
     ):
         session = data["session"]
         telegram_id = event.from_user.id
-        name = event.from_user.first_name
+        name = html.escape(event.from_user.first_name)
         username = event.from_user.username
         user = await get_user_or_none_by_telegram_id(session, telegram_id=telegram_id)
         if user:

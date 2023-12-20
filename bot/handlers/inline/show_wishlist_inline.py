@@ -1,3 +1,4 @@
+import html
 import random
 
 from aiogram import Router, F, types
@@ -64,7 +65,7 @@ async def show_wishlist_inline_handler(query: types.InlineQuery, session: AsyncS
 
     await query.answer(
         results,
-        switch_pm_text=f"Вишлист «{wishlist.title}». Автор: {creator.name}",
+        switch_pm_text=f"Вишлист «{html.unescape(wishlist.title)}». Автор: {html.unescape(creator.name)}",
         switch_pm_parameter=f"wl_{wishlist.hashcode}",
         cache_time=10,
     )

@@ -1,4 +1,5 @@
 import asyncio
+import html
 from datetime import datetime, timedelta, date
 
 from aiogram import Bot, Router, F
@@ -67,7 +68,7 @@ async def get_wishlist_purpose_handler(call: CallbackQuery,
         if user.date_of_birth:
             await state.update_data(user_age=date.today().year - user.date_of_birth.year)
         await bot.send_chat_action(call.from_user.id, "typing")
-        await asyncio.sleep(5)
+        await asyncio.sleep(4)
         await call.message.answer(strings.how_old_are_you_2)
         await state.set_state(CreateWishlistStates.user_age)
         return
@@ -116,7 +117,7 @@ async def ask_user_about_list_title(
         caption=strings.enter_wishlist_title_1,
     )
     await bot.send_chat_action(user_id, "typing")
-    await asyncio.sleep(3)
+    await asyncio.sleep(2.5)
     await bot.send_message(
         chat_id=user_id,
         text=strings.enter_wishlist_title_2(wl_purpose=wl_purpose)
@@ -136,7 +137,7 @@ async def handle_list_title_and_start_calendar(
         await message.reply(strings.wishlist_title_too_long)
         return
 
-    await state.update_data(list_title=message.text)
+    await state.update_data(list_title=html.escape(message.text))
     data = await state.get_data()
     wl_purpose = data.get("wl_purpose")
     if wl_purpose == strings.NEW_YEAR_PURPOSE:
@@ -174,9 +175,11 @@ async def process_simple_calendar(
     selected, selected_date = await calendar.process_selection(call, callback_data)
     if selected:
         await call.message.answer(
-            f'Вы выбрали {selected_date.strftime("%d.%m.%Y")}',
+            f'Выбранный день: {selected_date.strftime("%d.%m.%Y")}'
+            f'\n\nПодожди несколько секунд, пока я создаю твой вишлист!',
         )
-        await asyncio.sleep(1)
+        await bot.send_chat_action(call.from_user.id, "typing")
+        await asyncio.sleep(4)
         await finish_wishlist_create(
             state=state,
             session=session,

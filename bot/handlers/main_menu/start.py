@@ -34,7 +34,7 @@ async def cmd_start(
     await state.clear()
     list_type, hash_code = get_deep_link(message.text)
     await message.answer(
-        strings.start_text(message.from_user.first_name),
+        strings.start_text(user.name),
         reply_markup=start_keyboard()
     )
 
