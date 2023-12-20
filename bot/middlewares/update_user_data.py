@@ -17,17 +17,14 @@ class UpdateUserDataMiddleware(BaseMiddleware):
     ):
         session = data["session"]
         telegram_id = event.from_user.id
+        user = await get_user_or_none_by_telegram_id(session, telegram_id=telegram_id)
         name = html.escape(event.from_user.first_name)
         username = event.from_user.username
-        user = await get_user_or_none_by_telegram_id(session, telegram_id=telegram_id)
         if user:
-            await update_user(
-                session,
-                user=user,
-                name=name,
-                username=username,
-                is_active=True,
-            )
+            user.name = name
+            user.username = username
+            user.is_active = True
+            await session.commit()
         else:
             deep_link = None
             if "command" in data.keys():
