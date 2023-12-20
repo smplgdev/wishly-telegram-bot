@@ -2,7 +2,7 @@ import datetime
 import logging
 from datetime import date
 
-from sqlalchemy import select
+from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.operators import and_
 
@@ -104,13 +104,13 @@ async def get_empty_wishlists_during_period(session: AsyncSession, days: int = 1
     return empty_wishlists
 
 
-async def get_all_parties_wishlists_in_days(session: AsyncSession, days: int = 5):
+async def get_all_parties_wishlists_in_days(session: AsyncSession, days: list[int]):
     today = datetime.date.today()
-    expiration_day = today + datetime.timedelta(days=days)
+    expiration_days = [today + datetime.timedelta(days=day) for day in days]
     stmt = (
         select(Wishlist).
         where(Wishlist.is_active.is_(True)).
-        where(expiration_day == Wishlist.expiration_date)
+        where(or_(*[Wishlist.expiration_date == day for day in expiration_days]))
     )
     return (await session.execute(stmt)).scalars().all()
 

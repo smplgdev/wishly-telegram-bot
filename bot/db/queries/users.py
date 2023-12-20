@@ -56,6 +56,7 @@ async def update_user(session: AsyncSession, user: User, **kwargs) \
     for key, value in kwargs.items():
         setattr(user, key, value)
     await session.commit()
+    logging.info("User was deactivated – %s" % user)
     return True
 
 
