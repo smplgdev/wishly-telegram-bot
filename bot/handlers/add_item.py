@@ -50,7 +50,7 @@ async def add_new_item_to_wishlist_step2(message: types.Message, state: FSMConte
 @router.message(AddItemStates.description, F.content_type == 'text')
 async def add_new_item_to_wishlist_step3(message: types.Message, state: FSMContext):
     description = message.text
-    if len(description) > 256:
+    if len(description) > 512:
         await message.reply(strings.item_description_too_long)
         return
     if description != strings.skip_stage:
